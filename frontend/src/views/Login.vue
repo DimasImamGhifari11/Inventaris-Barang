@@ -190,6 +190,12 @@ const handleLogin = async () => {
   max-width: 360px;
   padding: 40px 36px;
   border: 1px solid #e5e5e5;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-box:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .login-header {

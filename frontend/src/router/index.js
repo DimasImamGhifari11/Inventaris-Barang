@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Dashboard from '../views/Dashboard.vue'
+import Home from '../views/Home.vue'
+import TambahData from '../views/TambahData.vue'
+import UpdateData from '../views/UpdateData.vue'
+import HapusData from '../views/HapusData.vue'
+import Riwayat from '../views/Riwayat.vue'
 
 const routes = [
   {
@@ -14,9 +19,35 @@ const routes = [
   },
   {
     path: '/dashboard',
-    name: 'Dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: Home
+      },
+      {
+        path: 'tambah-data',
+        name: 'TambahData',
+        component: TambahData
+      },
+      {
+        path: 'update-data',
+        name: 'UpdateData',
+        component: UpdateData
+      },
+      {
+        path: 'hapus-data',
+        name: 'HapusData',
+        component: HapusData
+      },
+      {
+        path: 'riwayat',
+        name: 'Riwayat',
+        component: Riwayat
+      }
+    ]
   }
 ]
 
