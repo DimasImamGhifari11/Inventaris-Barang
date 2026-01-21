@@ -1,5 +1,6 @@
 <template>
-  <div class="dashboard" :class="{ 'sidebar-open': sidebarOpen }">
+  <transition name="logout-fade">
+  <div class="dashboard" :class="{ 'sidebar-open': sidebarOpen }" v-if="!loggingOut">
     <!-- Sidebar -->
     <aside class="sidebar">
       <nav class="sidebar-nav">
@@ -64,6 +65,7 @@
       </router-view>
     </div>
   </div>
+  </transition>
 </template>
 
 <script setup>
@@ -72,15 +74,19 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const sidebarOpen = ref(false)
+const loggingOut = ref(false)
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value
 }
 
 const handleLogout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  router.push('/login')
+  loggingOut.value = true
+  setTimeout(() => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push('/login')
+  }, 400)
 }
 </script>
 
@@ -274,5 +280,15 @@ const handleLogout = () => {
 .page-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Logout transition */
+.logout-fade-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.logout-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
 }
 </style>
