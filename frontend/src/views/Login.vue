@@ -194,7 +194,7 @@ const handleLogin = async () => {
 }
 
 .login-box:hover {
-  transform: translateY(-1.5px);
+  transform: translateY(-0.9px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
