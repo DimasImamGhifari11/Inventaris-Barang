@@ -477,7 +477,9 @@ const handleSearch = () => {
   clearTimeout(searchTimeout.value)
   searchTimeout.value = setTimeout(() => {
     tableKey.value++
-    fetchData(1)
+    // Jika search kosong, tetap di halaman saat ini
+    const page = searchQuery.value.trim() === '' ? pagination.value.current_page : 1
+    fetchData(page)
   }, 300)
 }
 
