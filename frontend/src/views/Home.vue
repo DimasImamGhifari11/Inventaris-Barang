@@ -52,7 +52,7 @@
                 <td>{{ item.nama_aset }}</td>
                 <td>{{ item.jenis_aset }}</td>
                 <td>{{ item.jumlah }}</td>
-                <td>
+                <td class="kondisi-col">
                   <span :class="['kondisi-badge', kondisiClass(item.kondisi)]">
                     {{ item.kondisi }}
                   </span>
@@ -379,6 +379,10 @@ tbody tr:hover {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+}
+
+.kondisi-col {
+  text-align: center;
 }
 
 .kondisi-baik {

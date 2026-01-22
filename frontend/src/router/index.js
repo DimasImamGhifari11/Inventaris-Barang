@@ -4,6 +4,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Home from '../views/Home.vue'
 import TambahData from '../views/TambahData.vue'
 import UpdateData from '../views/UpdateData.vue'
+import UpdateForm from '../views/UpdateForm.vue'
 import HapusData from '../views/HapusData.vue'
 import Riwayat from '../views/Riwayat.vue'
 
@@ -36,6 +37,11 @@ const routes = [
         path: 'update-data',
         name: 'UpdateData',
         component: UpdateData
+      },
+      {
+        path: 'update-data/:id',
+        name: 'UpdateForm',
+        component: UpdateForm
       },
       {
         path: 'hapus-data',

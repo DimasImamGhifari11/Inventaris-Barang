@@ -158,7 +158,7 @@
                 <td>{{ asset.nama_aset }}</td>
                 <td>{{ asset.jenis_aset }}</td>
                 <td>{{ asset.jumlah }}</td>
-                <td>
+                <td class="kondisi-col">
                   <span class="badge" :class="getBadgeClass(asset.kondisi)">
                     {{ asset.kondisi }}
                   </span>
@@ -218,6 +218,11 @@
         <svg v-if="notification.type === 'success'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <svg v-else-if="notification.type === 'warning'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
         </svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
@@ -321,7 +326,18 @@ const uploadExcel = async () => {
 
     const response = await axios.post(`${API_URL}/barang/import`, { data })
     uploadSuccess.value = true
-    showNotification(`Berhasil import ${response.data.count} data`)
+
+    // Show success with error count if any
+    const successCount = response.data.count
+    const errorCount = response.data.errors?.length || 0
+
+    if (errorCount > 0) {
+      console.log('Import errors:', response.data.errors)
+      showNotification(`Berhasil import ${successCount} data, ${errorCount} gagal (cek console)`, 'warning')
+    } else {
+      showNotification(`Berhasil import ${successCount} data`)
+    }
+
     selectedFile.value = null
     fileInput.value.value = ''
     fetchData()
@@ -343,22 +359,62 @@ const readExcelFile = (file) => {
         const worksheet = workbook.Sheets[sheetName]
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
 
-        // Skip header row and map to objects
-        const header = jsonData[0]
-        const rows = jsonData.slice(1).filter(row => row.some(cell => cell !== null && cell !== ''))
+        // Get header row
+        const headerRow = jsonData[0] || []
 
-        const mappedData = rows.map(row => ({
-          kode_aset: row[0] || '',
-          kode_barang: row[1] || '',
-          nama_aset: row[2] || '',
-          jenis_aset: row[3] || '',
-          jumlah: parseInt(row[4]) || 1,
-          kondisi: row[5] || 'Baik',
-          lokasi_penyimpanan: row[6] || '',
-          penanggung_jawab: row[7] || '',
-          tahun_perolehan: parseInt(row[8]) || new Date().getFullYear()
+        // Check if first column is "No" (row number), then skip it
+        const firstHeader = String(headerRow[0] || '').toLowerCase().trim()
+        const skipFirstCol = (firstHeader === 'no' || firstHeader === 'no.' || firstHeader === 'nomor')
+        const offset = skipFirstCol ? 1 : 0
+
+        console.log('Skip first column:', skipFirstCol)
+
+        // Helper to safely get string value - treat "NaN" text as empty
+        const safeString = (val) => {
+          if (val === null || val === undefined || val === '') {
+            return '-'
+          }
+          const strVal = String(val).trim()
+          // Treat "NaN" text as empty
+          if (strVal === 'NaN' || strVal === 'nan' || strVal === 'NULL' || strVal === 'null' || strVal === '') {
+            return '-'
+          }
+          return strVal
+        }
+
+        // Skip header row and map to objects
+        const rows = jsonData.slice(1).filter(row => row.some(cell => {
+          if (cell === null || cell === undefined || cell === '') return false
+          const str = String(cell).trim()
+          return str !== '' && str !== 'NaN' && str !== 'nan'
         }))
 
+        let autoKodeCounter = 1
+
+        const mappedData = rows.map((row, index) => {
+          let kodeAset = safeString(row[0 + offset])
+
+          // Auto-generate kode_aset if empty or "-"
+          if (kodeAset === '-') {
+            kodeAset = `EGOV${String(autoKodeCounter).padStart(2, '0')}`
+            autoKodeCounter++
+          }
+
+          return {
+            kode_aset: kodeAset,
+            kode_barang: safeString(row[1 + offset]),
+            nama_aset: safeString(row[2 + offset]),
+            jenis_aset: safeString(row[3 + offset]),
+            jumlah: parseInt(row[4 + offset]) || 1,
+            kondisi: safeString(row[5 + offset]) === '-' ? 'Baik' : safeString(row[5 + offset]),
+            lokasi_penyimpanan: safeString(row[6 + offset]),
+            penanggung_jawab: safeString(row[7 + offset]),
+            tahun_perolehan: parseInt(row[8 + offset]) || new Date().getFullYear()
+          }
+        })
+
+        console.log('Mapped data sample:', mappedData[0])
+        console.log('Total rows:', mappedData.length)
         resolve(mappedData)
       } catch (error) {
         reject(error)
@@ -740,6 +796,10 @@ tbody tr:hover {
   color: #ff3b30;
 }
 
+.kondisi-col {
+  text-align: center;
+}
+
 .empty-table {
   display: flex;
   flex-direction: column;
@@ -852,6 +912,10 @@ tbody tr:hover {
 
 .notification.success {
   color: #34c759;
+}
+
+.notification.warning {
+  color: #ff9500;
 }
 
 .notification.error {
