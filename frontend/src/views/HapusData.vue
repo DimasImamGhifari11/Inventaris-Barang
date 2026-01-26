@@ -10,7 +10,7 @@
           <h2>Pilih Data untuk Dihapus</h2>
           <Transition name="fade">
             <button
-              v-if="selectedIds.length > 0"
+              v-if="selectedIds.length > 1"
               class="btn-bulk-delete"
               @click="confirmBulkDelete"
             >
