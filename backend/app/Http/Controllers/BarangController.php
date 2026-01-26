@@ -55,7 +55,8 @@ class BarangController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors()
             ], 422);
         }
 
@@ -121,7 +122,8 @@ class BarangController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors()
             ], 422);
         }
 
@@ -202,7 +204,8 @@ class BarangController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors()
             ], 422);
         }
 
