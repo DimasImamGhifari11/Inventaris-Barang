@@ -68,6 +68,16 @@
           <input type="text" v-model="form.penanggung_jawab" placeholder="" required />
         </div>
 
+        <div class="form-group">
+          <label>Keterangan</label>
+          <textarea
+            v-model="form.keterangan"
+            placeholder="Tuliskan keterangan perubahan data..."
+            rows="4"
+          ></textarea>
+          <span class="form-hint">Catatan: Kolom ini untuk mencatat informasi perubahan yang dilakukan</span>
+        </div>
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" @click="goBack">Batal</button>
           <button type="submit" class="btn btn-primary" :disabled="submitting">
@@ -137,7 +147,8 @@ const form = ref({
   kondisi: '',
   lokasi_penyimpanan: '',
   penanggung_jawab: '',
-  tahun_perolehan: currentYear
+  tahun_perolehan: currentYear,
+  keterangan: ''
 })
 
 const notification = ref({
@@ -169,7 +180,8 @@ const fetchAsset = async () => {
         kondisi: asset.value.kondisi,
         lokasi_penyimpanan: asset.value.lokasi_penyimpanan,
         penanggung_jawab: asset.value.penanggung_jawab,
-        tahun_perolehan: asset.value.tahun_perolehan
+        tahun_perolehan: asset.value.tahun_perolehan,
+        keterangan: asset.value.keterangan || ''
       }
     }
   } catch (error) {
@@ -295,7 +307,8 @@ onMounted(() => {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   padding: 10px 14px;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
@@ -304,15 +317,29 @@ onMounted(() => {
   background: #ffffff;
 }
 
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: #0071e3;
   box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
 }
 
-.form-group input::placeholder {
+.form-group input::placeholder,
+.form-group textarea::placeholder {
   color: #86868b;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #86868b;
+  margin-top: 4px;
 }
 
 .form-actions {
@@ -515,7 +542,8 @@ onMounted(() => {
   }
 
   .form-group input,
-  .form-group select {
+  .form-group select,
+  .form-group textarea {
     padding: 12px;
     font-size: 16px;
   }
