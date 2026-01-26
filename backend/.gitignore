@@ -40,3 +40,7 @@ composer.lock
 # OS
 .DS_Store
 Thumbs.db
+
+# Test Coverage Reports
+/tests/coverage-html
+/tests/coverage.txt
