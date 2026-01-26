@@ -27,8 +27,34 @@ cd backend
 composer install
 cp .env.example .env
 php artisan key:generate
-# Konfigurasi database di .env
+```
+
+### Konfigurasi Database
+
+1. Buat database baru di MySQL:
+```sql
+CREATE DATABASE inventaris_barang;
+```
+
+2. Buka file `.env` di folder backend dan sesuaikan konfigurasi database:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inventaris_barang
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+3. Jalankan migrasi database:
+```bash
+cd backend
 php artisan migrate
+```
+
+4. (Opsional) Jalankan seeder untuk data awal:
+```bash
+php artisan db:seed
 ```
 
 ### Frontend
