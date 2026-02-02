@@ -212,9 +212,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
-
-const API_URL = 'http://localhost:8000/api'
+import api from '../api'
 
 const assets = ref([])
 const loading = ref(false)
@@ -254,11 +252,11 @@ const showNotification = (message, type = 'success') => {
 const fetchData = async (page = 1) => {
   loading.value = true
   try {
-    let url = `${API_URL}/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=10`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
-    const response = await axios.get(url)
+    const response = await api.get(url)
     assets.value = response.data.data || []
     if (response.data.pagination) {
       pagination.value = response.data.pagination
@@ -345,7 +343,7 @@ const deleteAsset = async () => {
 
   deleting.value = true
   try {
-    await axios.delete(`${API_URL}/barang/${selectedAsset.value.id}`)
+    await api.delete(`/barang/${selectedAsset.value.id}`)
     showNotification('Data berhasil dihapus')
     closeModal()
     fetchData(pagination.value.current_page)
@@ -362,7 +360,7 @@ const bulkDeleteAssets = async () => {
   deleting.value = true
   try {
     await Promise.all(
-      selectedIds.value.map(id => axios.delete(`${API_URL}/barang/${id}`))
+      selectedIds.value.map(id => api.delete(`/barang/${id}`))
     )
     showNotification(`${selectedIds.value.length} data berhasil dihapus`)
     selectedIds.value = []

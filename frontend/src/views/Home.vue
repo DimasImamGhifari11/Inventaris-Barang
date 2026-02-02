@@ -1,4 +1,5 @@
 <template>
+  <div class="page-wrapper">
     <div class="data-section">
       <div class="section-header">
         <h3>Data Inventaris Barang</h3>
@@ -131,11 +132,12 @@
         <span>{{ notification.message }}</span>
       </div>
     </Transition>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '../api'
 import * as XLSX from 'xlsx'
 
 const user = ref(null)
@@ -180,11 +182,11 @@ const kondisiClass = (kondisi) => {
 const fetchBarang = async (page = 1) => {
   loading.value = true
   try {
-    let url = `http://localhost:8000/api/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=10`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
-    const response = await axios.get(url)
+    const response = await api.get(url)
     barangList.value = response.data.data || []
     if (response.data.pagination) {
       pagination.value = response.data.pagination
@@ -199,7 +201,7 @@ const fetchBarang = async (page = 1) => {
 
 const fetchAllBarang = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/api/barang?per_page=1000')
+    const response = await api.get('/barang?per_page=1000')
     allBarangList.value = response.data.data || []
   } catch (error) {
     console.error('Error fetching all data:', error)
@@ -265,7 +267,7 @@ const downloadExcel = async () => {
 }
 
 onMounted(() => {
-  const userData = localStorage.getItem('user')
+  const userData = sessionStorage.getItem('user')
   if (userData) {
     user.value = JSON.parse(userData)
   }

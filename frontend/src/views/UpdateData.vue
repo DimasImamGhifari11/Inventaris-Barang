@@ -133,9 +133,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+import api from '../api'
 
-const API_URL = 'http://localhost:8000/api'
 const router = useRouter()
 const route = useRoute()
 
@@ -168,11 +167,11 @@ const pagination = ref({
 const fetchData = async (page = 1) => {
   loading.value = true
   try {
-    let url = `${API_URL}/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=10`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
-    const response = await axios.get(url)
+    const response = await api.get(url)
     assets.value = response.data.data || []
     if (response.data.pagination) {
       pagination.value = response.data.pagination

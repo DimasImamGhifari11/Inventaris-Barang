@@ -198,9 +198,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
-
-const API_URL = 'http://localhost:8000/api'
+import api from '../api'
 
 const assets = ref([])
 const loading = ref(false)
@@ -240,11 +238,11 @@ const showNotification = (message, type = 'success') => {
 const fetchData = async (page = 1) => {
   loading.value = true
   try {
-    let url = `${API_URL}/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=10`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
-    const response = await axios.get(url)
+    const response = await api.get(url)
     assets.value = response.data.data || []
     if (response.data.pagination) {
       pagination.value = response.data.pagination

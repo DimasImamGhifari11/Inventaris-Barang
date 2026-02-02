@@ -237,10 +237,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from '../api'
 import * as XLSX from 'xlsx'
-
-const API_URL = 'http://localhost:8000/api'
 
 const currentYear = new Date().getFullYear()
 const fileInput = ref(null)
@@ -324,16 +322,19 @@ const uploadExcel = async () => {
       return
     }
 
-    const response = await axios.post(`${API_URL}/barang/import`, { data })
+    const response = await api.post('/barang/import', { data })
     uploadSuccess.value = true
 
-    // Show success with error count if any
+    // Show success with duplicate/error info
     const successCount = response.data.count
     const errorCount = response.data.errors?.length || 0
+    const duplicates = response.data.duplicates || []
 
-    if (errorCount > 0) {
+    if (duplicates.length > 0) {
+      showNotification(`Berhasil import ${successCount} data. ${duplicates.length} dilewati (kode aset sudah ada)`, 'warning')
+    } else if (errorCount > 0) {
       console.log('Import errors:', response.data.errors)
-      showNotification(`Berhasil import ${successCount} data, ${errorCount} gagal (cek console)`, 'warning')
+      showNotification(`Berhasil import ${successCount} data, ${errorCount} gagal`, 'warning')
     } else {
       showNotification(`Berhasil import ${successCount} data`)
     }
@@ -359,62 +360,97 @@ const readExcelFile = (file) => {
         const worksheet = workbook.Sheets[sheetName]
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
 
-        // Get header row
         const headerRow = jsonData[0] || []
 
-        // Check if first column is "No" (row number), then skip it
-        const firstHeader = String(headerRow[0] || '').toLowerCase().trim()
-        const skipFirstCol = (firstHeader === 'no' || firstHeader === 'no.' || firstHeader === 'nomor')
-        const offset = skipFirstCol ? 1 : 0
-
-        console.log('Skip first column:', skipFirstCol)
-
-        // Helper to safely get string value - treat "NaN" text as empty
         const safeString = (val) => {
-          if (val === null || val === undefined || val === '') {
-            return '-'
-          }
+          if (val === null || val === undefined || val === '') return '-'
           const strVal = String(val).trim()
-          // Treat "NaN" text as empty
-          if (strVal === 'NaN' || strVal === 'nan' || strVal === 'NULL' || strVal === 'null' || strVal === '') {
-            return '-'
-          }
+          if (strVal === 'NaN' || strVal === 'nan' || strVal === 'NULL' || strVal === 'null' || strVal === '') return '-'
           return strVal
         }
 
-        // Skip header row and map to objects
+        // Mapping nama header yang dikenali → field database
+        const headerAliases = {
+          kode_aset: ['kode aset', 'kode_aset', 'kodeaset', 'asset code'],
+          kode_barang: ['kode barang', 'kode_barang', 'kodebarang', 'item code'],
+          nama_aset: ['nama aset', 'nama_aset', 'namaaset', 'nama barang', 'nama_barang', 'asset name'],
+          jenis_aset: ['jenis aset', 'jenis_aset', 'jenisaset', 'jenis', 'jenis barang', 'type'],
+          jumlah: ['jumlah', 'qty', 'quantity', 'jml'],
+          kondisi: ['kondisi', 'condition', 'status'],
+          lokasi_penyimpanan: ['lokasi penyimpanan', 'lokasi_penyimpanan', 'lokasi', 'location'],
+          penanggung_jawab: ['penanggung jawab', 'penanggung_jawab', 'pj', 'pic'],
+          tahun_perolehan: ['tahun perolehan', 'tahun_perolehan', 'tahun', 'year']
+        }
+
+        // Coba cocokkan header dengan alias
+        const headerMap = {}
+        const normalizedHeaders = headerRow.map(h => String(h || '').toLowerCase().trim())
+
+        for (const [field, aliases] of Object.entries(headerAliases)) {
+          const idx = normalizedHeaders.findIndex(h => aliases.includes(h))
+          if (idx !== -1) headerMap[field] = idx
+        }
+
+        const useHeaderMapping = Object.keys(headerMap).length >= 3
+
+        // Fallback: urutan posisi kolom (skip kolom "No" jika ada)
+        let offset = 0
+        if (!useHeaderMapping) {
+          const firstHeader = normalizedHeaders[0]
+          if (firstHeader === 'no' || firstHeader === 'no.' || firstHeader === 'nomor') offset = 1
+        }
+
         const rows = jsonData.slice(1).filter(row => row.some(cell => {
           if (cell === null || cell === undefined || cell === '') return false
-          const str = String(cell).trim()
-          return str !== '' && str !== 'NaN' && str !== 'nan'
+          return String(cell).trim() !== '' && String(cell).trim() !== 'NaN'
         }))
 
         let autoKodeCounter = 1
 
-        const mappedData = rows.map((row, index) => {
-          let kodeAset = safeString(row[0 + offset])
+        const mappedData = rows.map((row) => {
+          let kodeAset, kodeBarang, namaAset, jenisAset, jumlah, kondisi, lokasi, pj, tahun
 
-          // Auto-generate kode_aset if empty or "-"
+          if (useHeaderMapping) {
+            kodeAset = safeString(row[headerMap.kode_aset])
+            kodeBarang = safeString(row[headerMap.kode_barang])
+            namaAset = safeString(row[headerMap.nama_aset])
+            jenisAset = safeString(row[headerMap.jenis_aset])
+            jumlah = parseInt(row[headerMap.jumlah]) || 1
+            kondisi = safeString(row[headerMap.kondisi])
+            lokasi = safeString(row[headerMap.lokasi_penyimpanan])
+            pj = safeString(row[headerMap.penanggung_jawab])
+            tahun = parseInt(row[headerMap.tahun_perolehan]) || new Date().getFullYear()
+          } else {
+            kodeAset = safeString(row[0 + offset])
+            kodeBarang = safeString(row[1 + offset])
+            namaAset = safeString(row[2 + offset])
+            jenisAset = safeString(row[3 + offset])
+            jumlah = parseInt(row[4 + offset]) || 1
+            kondisi = safeString(row[5 + offset])
+            lokasi = safeString(row[6 + offset])
+            pj = safeString(row[7 + offset])
+            tahun = parseInt(row[8 + offset]) || new Date().getFullYear()
+          }
+
           if (kodeAset === '-') {
             kodeAset = `EGOV${String(autoKodeCounter).padStart(2, '0')}`
             autoKodeCounter++
           }
+          if (kondisi === '-') kondisi = 'Baik'
 
           return {
             kode_aset: kodeAset,
-            kode_barang: safeString(row[1 + offset]),
-            nama_aset: safeString(row[2 + offset]),
-            jenis_aset: safeString(row[3 + offset]),
-            jumlah: parseInt(row[4 + offset]) || 1,
-            kondisi: safeString(row[5 + offset]) === '-' ? 'Baik' : safeString(row[5 + offset]),
-            lokasi_penyimpanan: safeString(row[6 + offset]),
-            penanggung_jawab: safeString(row[7 + offset]),
-            tahun_perolehan: parseInt(row[8 + offset]) || new Date().getFullYear()
+            kode_barang: kodeBarang,
+            nama_aset: namaAset,
+            jenis_aset: jenisAset,
+            jumlah,
+            kondisi,
+            lokasi_penyimpanan: lokasi,
+            penanggung_jawab: pj,
+            tahun_perolehan: tahun
           }
         })
 
-        console.log('Mapped data sample:', mappedData[0])
-        console.log('Total rows:', mappedData.length)
         resolve(mappedData)
       } catch (error) {
         reject(error)
@@ -429,7 +465,7 @@ const readExcelFile = (file) => {
 const submitForm = async () => {
   submitting.value = true
   try {
-    await axios.post(`${API_URL}/barang`, form.value)
+    await api.post('/barang', form.value)
     showNotification('Data berhasil disimpan')
     resetForm()
     fetchData(pagination.value.current_page)
@@ -457,11 +493,11 @@ const resetForm = () => {
 const fetchData = async (page = 1) => {
   loading.value = true
   try {
-    let url = `${API_URL}/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=10`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
-    const response = await axios.get(url)
+    const response = await api.get(url)
     assets.value = response.data.data || []
     if (response.data.pagination) {
       pagination.value = response.data.pagination

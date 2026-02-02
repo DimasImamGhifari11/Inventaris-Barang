@@ -211,11 +211,19 @@ class BarangController extends Controller
 
         $count = 0;
         $errors = [];
+        $duplicates = [];
 
         foreach ($request->data as $index => $row) {
             try {
+                $kodeAset = $row['kode_aset'] ?? '';
+
+                if (Barang::where('kode_aset', $kodeAset)->exists()) {
+                    $duplicates[] = $kodeAset;
+                    continue;
+                }
+
                 $barang = Barang::create([
-                    'kode_aset' => $row['kode_aset'] ?? '',
+                    'kode_aset' => $kodeAset,
                     'kode_barang' => $row['kode_barang'] ?? '',
                     'nama_aset' => $row['nama_aset'] ?? '',
                     'jenis_aset' => $row['jenis_aset'] ?? '',
@@ -226,7 +234,6 @@ class BarangController extends Controller
                     'tahun_perolehan' => (int)($row['tahun_perolehan'] ?? date('Y')),
                 ]);
 
-                // Log riwayat import
                 Riwayat::create([
                     'kode_barang' => $barang->kode_barang,
                     'nama_aset' => $barang->nama_aset,
@@ -246,7 +253,8 @@ class BarangController extends Controller
             'success' => true,
             'message' => "Berhasil import $count data",
             'count' => $count,
-            'errors' => $errors
+            'errors' => $errors,
+            'duplicates' => $duplicates
         ]);
     }
 }

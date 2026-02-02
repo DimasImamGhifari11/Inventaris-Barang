@@ -127,9 +127,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+import api from '../api'
 
-const API_URL = 'http://localhost:8000/api'
 const router = useRouter()
 const route = useRoute()
 
@@ -170,7 +169,7 @@ const fetchAsset = async () => {
   loading.value = true
   try {
     const id = route.params.id
-    const response = await axios.get(`${API_URL}/barang/${id}`)
+    const response = await api.get(`/barang/${id}`)
     if (response.data.success) {
       asset.value = response.data.data
       form.value = {
@@ -232,7 +231,7 @@ const submitForm = async () => {
   submitting.value = true
   try {
     const id = route.params.id
-    await axios.put(`${API_URL}/barang/${id}`, form.value)
+    await api.put(`/barang/${id}`, form.value)
     showNotification('Data berhasil diupdate')
     setTimeout(() => {
       const page = route.query.page || 1

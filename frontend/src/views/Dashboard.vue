@@ -90,6 +90,27 @@
         </transition>
       </router-view>
     </div>
+
+    <!-- Logout Confirmation Modal -->
+    <Transition name="modal">
+      <div v-if="showLogoutConfirm" class="modal-overlay" @click.self="cancelLogout">
+        <div class="modal-content">
+          <div class="modal-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </div>
+          <h3>Konfirmasi Logout</h3>
+          <p class="modal-message">Apakah Anda yakin ingin keluar?</p>
+          <div class="modal-actions">
+            <button class="btn btn-secondary" @click="cancelLogout">Batal</button>
+            <button class="btn btn-danger" @click="confirmLogout">Ya, Logout</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
   </transition>
 </template>
@@ -127,13 +148,24 @@ const closeSidebar = () => {
   }
 }
 
+const showLogoutConfirm = ref(false)
+
 const handleLogout = () => {
+  showLogoutConfirm.value = true
+}
+
+const confirmLogout = () => {
+  showLogoutConfirm.value = false
   loggingOut.value = true
   setTimeout(() => {
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
     router.push('/login')
   }, 400)
+}
+
+const cancelLogout = () => {
+  showLogoutConfirm.value = false
 }
 </script>
 
@@ -528,5 +560,107 @@ const handleLogout = () => {
     padding: 8px 12px;
     font-size: 12px;
   }
+}
+
+/* Logout Confirmation Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 32px;
+  width: 360px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: 0 20px 60px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.modal-icon {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+}
+
+.modal-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-message {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--border-color);
+}
+
+.btn-danger {
+  background: #ff3b30;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #e0352b;
+}
+
+/* Modal transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.modal-enter-active .modal-content,
+.modal-leave-active .modal-content {
+  transition: transform 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-content {
+  transform: scale(0.95);
+}
+
+.modal-leave-to .modal-content {
+  transform: scale(0.95);
 }
 </style>
