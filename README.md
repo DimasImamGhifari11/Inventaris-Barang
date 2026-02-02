@@ -258,7 +258,7 @@ XDEBUG_MODE=coverage php artisan test --coverage-html tests/coverage-html
 ## Contact
 
 Untuk pertanyaan, dukungan, atau permintaan pengembangan:
-- Buat **Issue**: https://github.com/DimasImamGhifari11/Website-Inventaris-Barang/issues
+- Buat **Issue**: https://github.com/DimasImamGhifari/Website-Inventaris-Barang/issues
 - Email: **imamghifaridimas@gmail.com**
 
 ---
