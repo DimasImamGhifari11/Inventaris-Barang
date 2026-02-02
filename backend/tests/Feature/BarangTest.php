@@ -34,7 +34,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -80,7 +80,7 @@ class BarangTest extends TestCase
             ]
         ];
 
-        $response = $this->postJson('/api/barang/import', $data);
+        $response = $this->authenticatedPostJson('/api/barang/import', $data);
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -108,7 +108,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $this->postJson('/api/barang', $data);
+        $this->authenticatedPostJson('/api/barang', $data);
 
         $this->assertDatabaseHas('riwayat', [
             'kode_barang' => '2025.001/EGOV',
@@ -136,7 +136,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2023,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('barang', [
@@ -162,7 +162,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2020,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('barang', [
@@ -208,7 +208,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -233,7 +233,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -258,7 +258,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -283,7 +283,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 1999, // Tidak valid: minimal 2000
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -308,7 +308,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -330,7 +330,7 @@ class BarangTest extends TestCase
         // Buat data test
         Barang::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/barang');
+        $response = $this->authenticatedGetJson('/api/barang');
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -377,7 +377,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        $response = $this->getJson('/api/barang?search=Laptop');
+        $response = $this->authenticatedGetJson('/api/barang?search=Laptop');
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -398,13 +398,13 @@ class BarangTest extends TestCase
         Barang::factory()->count(15)->create();
 
         // Test halaman 1
-        $response1 = $this->getJson('/api/barang?page=1&per_page=10');
+        $response1 = $this->authenticatedGetJson('/api/barang?page=1&per_page=10');
         $response1->assertStatus(200);
         $this->assertCount(10, $response1->json('data'));
         $this->assertEquals(1, $response1->json('pagination.current_page'));
 
         // Test halaman 2
-        $response2 = $this->getJson('/api/barang?page=2&per_page=10');
+        $response2 = $this->authenticatedGetJson('/api/barang?page=2&per_page=10');
         $response2->assertStatus(200);
         $this->assertCount(5, $response2->json('data'));
         $this->assertEquals(2, $response2->json('pagination.current_page'));
@@ -428,9 +428,9 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $this->postJson('/api/barang', $data);
+        $this->authenticatedPostJson('/api/barang', $data);
 
-        $response = $this->getJson('/api/riwayat');
+        $response = $this->authenticatedGetJson('/api/riwayat');
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -462,7 +462,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        $response = $this->getJson("/api/barang/{$barang->id}");
+        $response = $this->authenticatedGetJson("/api/barang/{$barang->id}");
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -509,7 +509,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -552,7 +552,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(200);
 
@@ -594,7 +594,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(200);
 
@@ -637,7 +637,7 @@ class BarangTest extends TestCase
             'keterangan' => 'Perbaikan unit',
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(200);
 
@@ -677,7 +677,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(200);
 
@@ -741,7 +741,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang2->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang2->id}", $updateData);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -778,7 +778,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -815,7 +815,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -840,7 +840,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ];
 
-        $response = $this->putJson('/api/barang/9999', $updateData);
+        $response = $this->authenticatedPutJson('/api/barang/9999', $updateData);
 
         $response->assertStatus(404)
                  ->assertJson([
@@ -878,7 +878,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 1990, // Tidak valid
         ];
 
-        $response = $this->putJson("/api/barang/{$barang->id}", $updateData);
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -909,7 +909,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        $response = $this->deleteJson("/api/barang/{$barang->id}");
+        $response = $this->authenticatedDeleteJson("/api/barang/{$barang->id}");
 
         $response->assertStatus(200)
                  ->assertJson([
@@ -952,8 +952,8 @@ class BarangTest extends TestCase
         ]);
 
         // Hapus keduanya
-        $this->deleteJson("/api/barang/{$barang1->id}");
-        $this->deleteJson("/api/barang/{$barang2->id}");
+        $this->authenticatedDeleteJson("/api/barang/{$barang1->id}");
+        $this->authenticatedDeleteJson("/api/barang/{$barang2->id}");
 
         $this->assertDatabaseMissing('barang', ['id' => $barang1->id]);
         $this->assertDatabaseMissing('barang', ['id' => $barang2->id]);
@@ -964,7 +964,7 @@ class BarangTest extends TestCase
      */
     public function test_hapus_data_yang_tidak_ada(): void
     {
-        $response = $this->deleteJson('/api/barang/9999');
+        $response = $this->authenticatedDeleteJson('/api/barang/9999');
 
         $response->assertStatus(404)
                  ->assertJson([
@@ -990,7 +990,7 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        $this->deleteJson("/api/barang/{$barang->id}");
+        $this->authenticatedDeleteJson("/api/barang/{$barang->id}");
 
         // Cek riwayat mencatat "Hapus Data"
         $this->assertDatabaseHas('riwayat', [
@@ -1033,8 +1033,12 @@ class BarangTest extends TestCase
 
         $this->assertDatabaseCount('barang', 2);
 
-        $this->deleteJson("/api/barang/{$barang2->id}");
+        $this->authenticatedDeleteJson("/api/barang/{$barang2->id}");
 
         $this->assertDatabaseCount('barang', 1);
     }
 }
+
+
+
+

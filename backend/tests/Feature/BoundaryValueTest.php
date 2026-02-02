@@ -47,7 +47,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['jumlah'] = 1; // Nilai minimum valid
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -72,7 +72,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['jumlah'] = 0; // Di bawah minimum
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -92,7 +92,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['tahun_perolehan'] = 2000; // Nilai minimum valid
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -117,7 +117,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['tahun_perolehan'] = 1999; // Di bawah minimum
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -137,7 +137,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['kode_aset'] = ''; // Empty string
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -157,7 +157,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['jumlah'] = -1; // Nilai negatif
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -177,7 +177,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['tahun_perolehan'] = (int) date('Y'); // Tahun sekarang
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -202,7 +202,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['tahun_perolehan'] = (int) date('Y') + 1; // Tahun depan
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(422)
                  ->assertJson([
@@ -222,7 +222,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['nama_aset'] = 'A'; // 1 karakter
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -246,7 +246,7 @@ class BoundaryValueTest extends TestCase
         $data = $this->getBaseData();
         $data['nama_aset'] = str_repeat('A', 255); // 255 karakter
 
-        $response = $this->postJson('/api/barang', $data);
+        $response = $this->authenticatedPostJson('/api/barang', $data);
 
         $response->assertStatus(201)
                  ->assertJson([
@@ -258,3 +258,6 @@ class BoundaryValueTest extends TestCase
         ]);
     }
 }
+
+
+
