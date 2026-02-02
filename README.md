@@ -190,9 +190,11 @@ XDEBUG_MODE=coverage php artisan test --coverage-html tests/coverage-html
 |-----------|-------------|-----------|------------|--------|---------|--------|------------------|-------|
 | EGOV01 | 2025.001/EGOV | Camera Video | Peralatan IT | 1 | Baik | Ruang Server | John Doe | 2025 |
 
-## Lisensi
+## Contact
 
-MIT License
+Untuk pertanyaan, dukungan, atau permintaan pengembangan:
+- Buat **Issue**: https://github.com/DimasImamGhifari11/Website-Inventaris-Barang/issues
+- Email: **imamghifaridimas@gmail.com**
 
 ---
 
