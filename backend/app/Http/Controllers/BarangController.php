@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 
 class BarangController extends Controller
 {
+    public function statistik()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'total_aset' => Barang::count(),
+            ]
+        ]);
+    }
+
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);

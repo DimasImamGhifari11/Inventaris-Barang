@@ -1,5 +1,22 @@
 <template>
   <div class="page-wrapper">
+    <!-- Statistik -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Total Aset</span>
+          <span class="stat-value">{{ totalAset }}</span>
+        </div>
+      </div>
+    </div>
+
     <div class="data-section">
       <div class="section-header">
         <h3>Data Inventaris Barang</h3>
@@ -141,6 +158,7 @@ import api from '../api'
 import * as XLSX from 'xlsx'
 
 const user = ref(null)
+const totalAset = ref(0)
 const barangList = ref([])
 const allBarangList = ref([]) // For Excel download
 const searchQuery = ref('')
@@ -177,6 +195,15 @@ const kondisiClass = (kondisi) => {
   if (kondisi === 'Rusak Ringan') return 'kondisi-ringan'
   if (kondisi === 'Rusak Berat') return 'kondisi-berat'
   return ''
+}
+
+const fetchStatistik = async () => {
+  try {
+    const response = await api.get('/statistik')
+    totalAset.value = response.data.data.total_aset
+  } catch (error) {
+    console.error('Error fetching statistik:', error)
+  }
 }
 
 const fetchBarang = async (page = 1) => {
@@ -271,11 +298,65 @@ onMounted(() => {
   if (userData) {
     user.value = JSON.parse(userData)
   }
+  fetchStatistik()
   fetchBarang()
 })
 </script>
 
 <style scoped>
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #e8f4fd;
+  color: #2196f3;
+  flex-shrink: 0;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
 .data-section {
   background: var(--bg-card);
   border-radius: 12px;
@@ -610,6 +691,18 @@ tbody tr:hover {
 
 /* Tablet */
 @media (max-width: 768px) {
+  .stats-section {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-card {
+    padding: 16px 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
   .data-section {
     padding: 16px;
   }
@@ -665,6 +758,30 @@ tbody tr:hover {
 
 /* Mobile */
 @media (max-width: 480px) {
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+  }
+
+  .stat-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
   .data-section {
     padding: 12px;
     border-radius: 8px;

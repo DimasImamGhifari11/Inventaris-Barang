@@ -65,6 +65,9 @@ Route::get('/user', function (Request $request) {
 
 // Protected Routes - Memerlukan autentikasi
 Route::middleware('auth:sanctum')->group(function () {
+    // Statistik
+    Route::get('/statistik', [BarangController::class, 'statistik']);
+
     // Barang Routes
     Route::get('/barang', [BarangController::class, 'index']);
     Route::post('/barang', [BarangController::class, 'store']);
