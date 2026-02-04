@@ -126,9 +126,13 @@ const loggingOut = ref(false)
 const isDarkMode = ref(false)
 
 const toggleDarkMode = () => {
+  document.documentElement.classList.add('theme-transition')
   isDarkMode.value = !isDarkMode.value
   document.documentElement.setAttribute('data-theme', isDarkMode.value ? 'dark' : 'light')
   localStorage.setItem('darkMode', isDarkMode.value ? 'true' : 'false')
+  setTimeout(() => {
+    document.documentElement.classList.remove('theme-transition')
+  }, 400)
 }
 
 onMounted(() => {
