@@ -57,12 +57,12 @@
                     class="checkbox"
                   />
                 </th>
+                <th class="action-col">Aksi</th>
                 <th>No</th>
                 <th>Kode Aset</th>
                 <th>Kode Barang</th>
                 <th>Nama Aset</th>
                 <th>Tahun Pengadaan</th>
-                <th class="action-col">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -75,11 +75,6 @@
                     class="checkbox"
                   />
                 </td>
-                <td>{{ getRowNumber(index) }}</td>
-                <td>{{ asset.kode_aset }}</td>
-                <td>{{ asset.kode_barang }}</td>
-                <td>{{ asset.nama_aset }}</td>
-                <td>{{ asset.tahun_perolehan }}</td>
                 <td class="action-col">
                   <button class="btn-download" @click="confirmSingleGenerate(asset)" title="Download Label">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -89,6 +84,11 @@
                     </svg>
                   </button>
                 </td>
+                <td>{{ getRowNumber(index) }}</td>
+                <td>{{ asset.kode_aset }}</td>
+                <td>{{ asset.kode_barang }}</td>
+                <td>{{ asset.nama_aset }}</td>
+                <td>{{ asset.tahun_perolehan }}</td>
               </tr>
             </tbody>
           </table>
