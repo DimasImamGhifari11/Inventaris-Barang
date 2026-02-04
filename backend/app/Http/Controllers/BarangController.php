@@ -42,7 +42,8 @@ class BarangController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('kode_aset', 'like', "%{$search}%")
                   ->orWhere('kode_barang', 'like', "%{$search}%")
-                  ->orWhere('nama_aset', 'like', "%{$search}%");
+                  ->orWhere('nama_aset', 'like', "%{$search}%")
+                  ->orWhere('penanggung_jawab', 'like', "%{$search}%");
             });
         }
 
