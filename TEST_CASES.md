@@ -76,6 +76,50 @@
 
 ---
 
+### 7. STATISTIK & DASHBOARD - Positive Test Cases
+
+| No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
+|----|--------------|----------------|-------------------|------------|-----------------|--------|
+| 1 | WB-ST-P01 | Menampilkan statistik Total Aset | 1. Login<br>2. Buka halaman Home | - | Stat card Total Aset menampilkan jumlah record barang | ✅ |
+| 2 | WB-ST-P02 | Menampilkan statistik Total Unit Barang | 1. Buka halaman Home | - | Stat card Total Unit menampilkan sum dari kolom jumlah | ✅ |
+| 3 | WB-ST-P03 | Menampilkan statistik Total Aktivitas | 1. Buka halaman Home | - | Stat card Total Aktivitas menampilkan jumlah record riwayat | ✅ |
+| 4 | WB-ST-P04 | Menampilkan statistik Kondisi Baik | 1. Buka halaman Home | - | Stat card Kondisi Baik menampilkan jumlah aset dengan kondisi "Baik" | ✅ |
+| 5 | WB-ST-P05 | Donut chart menampilkan data kondisi | 1. Buka halaman Home | - | Donut chart menampilkan proporsi Baik, Rusak Ringan, Rusak Berat dengan animasi fill | ✅ |
+| 6 | WB-ST-P06 | Aktivitas Terbaru menampilkan 5 log terakhir | 1. Buka halaman Home | - | Daftar 5 aktivitas terbaru ditampilkan dengan badge dan waktu | ✅ |
+
+---
+
+### 8. AKUN - Positive Test Cases
+
+| No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
+|----|--------------|----------------|-------------------|------------|-----------------|--------|
+| 1 | WB-AK-P01 | Ganti username dengan data valid | 1. Buka halaman Akun<br>2. Isi username baru<br>3. Klik Simpan | username: "admin_baru" | Username berhasil diubah, notifikasi sukses | ✅ |
+| 2 | WB-AK-P02 | Ganti password dengan data valid | 1. Buka halaman Akun<br>2. Isi password lama, baru, dan konfirmasi<br>3. Klik Simpan | password_lama: "123456"<br>password_baru: "654321"<br>konfirmasi: "654321" | Password berhasil diubah, notifikasi sukses | ✅ |
+| 3 | WB-AK-P03 | Login dengan password baru setelah ganti | 1. Ganti password<br>2. Logout<br>3. Login dengan password baru | password: "654321" | Login berhasil dengan password baru | ✅ |
+
+---
+
+### 9. AKUN - Negative Test Cases
+
+| No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
+|----|--------------|----------------|-------------------|------------|-----------------|--------|
+| 1 | WB-AK-N01 | Ganti password dengan password lama salah | 1. Buka halaman Akun<br>2. Isi password lama yang salah<br>3. Klik Simpan | password_lama: "salah123" | Gagal, muncul pesan "Password lama salah" | ✅ |
+| 2 | WB-AK-N02 | Ganti password dengan konfirmasi tidak cocok | 1. Isi password baru dan konfirmasi berbeda<br>2. Klik Simpan | password_baru: "abc123"<br>konfirmasi: "xyz789" | Form tidak bisa disubmit, pesan error konfirmasi | ✅ |
+| 3 | WB-AK-N03 | Ganti username kurang dari 3 karakter | 1. Isi username dengan 2 karakter<br>2. Klik Simpan | username: "ab" | Gagal, validasi error minimum 3 karakter | ✅ |
+| 4 | WB-AK-N04 | Ganti password kurang dari 6 karakter | 1. Isi password baru kurang dari 6 karakter<br>2. Klik Simpan | password_baru: "abc" | Gagal, validasi error minimum 6 karakter | ✅ |
+
+---
+
+### 10. GENERATE LABEL - Positive Test Cases
+
+| No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
+|----|--------------|----------------|-------------------|------------|-----------------|--------|
+| 1 | WB-GL-P01 | Generate label single data | 1. Buka Generate Label<br>2. Klik tombol Generate pada satu data | id: 1 | Label berhasil di-generate dalam format PNG | ✅ |
+| 2 | WB-GL-P02 | Generate label multiple data | 1. Checklist beberapa data<br>2. Klik Generate Terpilih | ids: [1, 2, 3] | Semua label berhasil di-generate | ✅ |
+| 3 | WB-GL-P03 | Pencarian data di Generate Label | 1. Ketik keyword di search box | search: "Laptop" | Data yang mengandung "Laptop" ditampilkan | ✅ |
+
+---
+
 ## B. BLACK BOX TESTING
 
 ---
@@ -85,14 +129,36 @@
 | No | Test Case ID | Modul | Nama Test Case | Pre-condition | Langkah Pengujian | Expected Result | Status |
 |----|--------------|-------|----------------|---------------|-------------------|-----------------|--------|
 | 1 | BB-FN-01 | Login | Login dengan data valid | Di halaman login | 1. Isi username & password valid<br>2. Klik Login | Berhasil masuk ke dashboard | ✅ |
-| 2 | BB-FN-02 | Tambah Data | Simpan data baru | Form terisi valid | 1. Isi semua field<br>2. Klik Simpan | Data tersimpan, notifikasi muncul | ✅ |
-| 3 | BB-FN-03 | Update Data | Simpan perubahan | Ada perubahan data | 1. Ubah data<br>2. Klik Simpan | Data terupdate, notifikasi muncul | ✅ |
-| 4 | BB-FN-04 | Hapus Data | Hapus data | Modal terbuka | 1. Klik "Ya, Hapus" | Data terhapus, notifikasi muncul | ✅ |
-| 5 | BB-FN-05 | Riwayat | Menampilkan log aktivitas | Ada aktivitas sebelumnya | 1. Klik menu Riwayat | Log aktivitas ditampilkan dengan detail | ✅ |
+| 2 | BB-FN-02 | Login | Login dengan data tidak valid | Di halaman login | 1. Isi username/password salah<br>2. Klik Login | Gagal login, pesan error muncul | ✅ |
+| 3 | BB-FN-03 | Tambah Data | Simpan data baru | Form terisi valid | 1. Isi semua field<br>2. Klik Simpan | Data tersimpan, notifikasi muncul | ✅ |
+| 4 | BB-FN-04 | Update Data | Simpan perubahan | Ada perubahan data | 1. Ubah data<br>2. Klik Simpan | Data terupdate, notifikasi muncul | ✅ |
+| 5 | BB-FN-05 | Hapus Data | Hapus data | Modal terbuka | 1. Klik "Ya, Hapus" | Data terhapus, notifikasi muncul | ✅ |
+| 6 | BB-FN-06 | Riwayat | Menampilkan log aktivitas | Ada aktivitas sebelumnya | 1. Klik menu Riwayat | Log aktivitas ditampilkan dengan detail | ✅ |
+| 7 | BB-FN-07 | Statistik | Statistik terupdate setelah tambah data | Data sudah ditambahkan | 1. Tambah data baru<br>2. Buka Home | Angka Total Aset, Total Unit, dan Kondisi terupdate | ✅ |
+| 8 | BB-FN-08 | Akun | Ganti username | Login aktif | 1. Buka Akun<br>2. Ganti username<br>3. Simpan | Username berubah, sidebar menampilkan nama baru | ✅ |
+| 9 | BB-FN-09 | Akun | Ganti password | Login aktif | 1. Buka Akun<br>2. Isi password lama & baru<br>3. Simpan | Password berubah, bisa login dengan password baru | ✅ |
+| 10 | BB-FN-10 | Search | Pencarian berdasarkan penanggung jawab | Data tersedia | 1. Ketik nama penanggung jawab di search<br>2. Lihat hasil | Data dengan penanggung jawab sesuai keyword ditampilkan | ✅ |
+| 11 | BB-FN-11 | Generate Label | Generate label aset | Data tersedia | 1. Buka Generate Label<br>2. Klik Generate pada data | Label PNG berhasil di-generate | ✅ |
+| 12 | BB-FN-12 | Logout | Logout dari sistem | Sudah login | 1. Klik tombol Logout | Kembali ke halaman login, token dihapus | ✅ |
 
 ---
 
-### 2. BOUNDARY VALUE ANALYSIS
+### 2. UI/UX TESTING
+
+| No | Test Case ID | Modul | Nama Test Case | Pre-condition | Langkah Pengujian | Expected Result | Status |
+|----|--------------|-------|----------------|---------------|-------------------|-----------------|--------|
+| 1 | BB-UI-01 | Dashboard | Animasi donut chart | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan donut chart | Donut chart muncul dengan animasi fill melingkar (clockwise) | ✅ |
+| 2 | BB-UI-02 | Dashboard | Animasi counting statistik | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan angka stat card | Angka stat card beranimasi dari 0 ke nilai akhir | ✅ |
+| 3 | BB-UI-03 | Dashboard | Dark mode toggle | Halaman dashboard terbuka | 1. Klik toggle Dark Mode | Tema berubah dengan transisi smooth, tidak ada flicker | ✅ |
+| 4 | BB-UI-04 | Dashboard | Responsive mobile view | Browser di resolusi mobile | 1. Resize browser ke 375px<br>2. Cek stat cards dan tabel | Layout menyesuaikan, stat cards 2 kolom, tabel scrollable | ✅ |
+| 5 | BB-UI-05 | Semua Tabel | Kolom Jumlah center-aligned | Halaman dengan tabel terbuka | 1. Buka halaman dengan tabel<br>2. Lihat kolom Jumlah | Angka jumlah rata tengah di semua halaman | ✅ |
+| 6 | BB-UI-06 | Semua Tabel | Badge kondisi konsisten | Halaman dengan tabel terbuka | 1. Buka semua halaman tabel | Badge kondisi berbentuk kotak (bukan pill) dengan warna konsisten di semua halaman | ✅ |
+| 7 | BB-UI-07 | Riwayat | Pagination 250 rows | Halaman Riwayat terbuka | 1. Buka Riwayat<br>2. Pilih 250 di dropdown per page | Tabel menampilkan hingga 250 baris per halaman | ✅ |
+| 8 | BB-UI-08 | Dashboard | Aktivitas Terbaru di samping donut | Halaman Home terbuka | 1. Buka halaman Home | Daftar 5 aktivitas terbaru muncul di samping donut chart | ✅ |
+
+---
+
+### 3. BOUNDARY VALUE ANALYSIS
 
 | No | Test Case ID | Field | Boundary | Test Value | Expected Result | Status |
 |----|--------------|-------|----------|------------|-----------------|--------|
@@ -120,12 +186,17 @@
 | Update Positive | 5 |
 | Update Negative | 5 |
 | Delete Positive | 5 |
-| **Subtotal White Box** | **30** |
+| Statistik & Dashboard Positive | 6 |
+| Akun Positive | 3 |
+| Akun Negative | 4 |
+| Generate Label Positive | 3 |
+| **Subtotal White Box** | **46** |
 | **BLACK BOX TESTING** | |
-| Functional Testing | 5 |
+| Functional Testing | 12 |
+| UI/UX Testing | 8 |
 | Boundary Value Analysis | 10 |
-| **Subtotal Black Box** | **15** |
-| **TOTAL** | **45** |
+| **Subtotal Black Box** | **30** |
+| **TOTAL** | **76** |
 
 ---
 
@@ -135,6 +206,21 @@
 - ✅ Pass
 - ❌ Fail
 - ⏳ Pending
+
+**Fitur yang Diuji:**
+- Login / Logout
+- CRUD Barang (Tambah, Update, Hapus)
+- Import Excel
+- Bulk Delete
+- Pencarian (kode_aset, kode_barang, nama_aset, penanggung_jawab)
+- Pagination
+- Statistik Dashboard (Total Aset, Total Unit, Total Aktivitas, Kondisi Baik)
+- Donut Chart dengan Animasi
+- Aktivitas Terbaru
+- Generate Label (PNG)
+- Manajemen Akun (Ganti Username & Password)
+- Dark Mode dengan Transisi Smooth
+- Responsive Design
 
 ---
 
