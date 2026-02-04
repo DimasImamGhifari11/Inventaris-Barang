@@ -177,7 +177,7 @@ const showNotification = (message, type = 'success') => {
   }, 3000)
 }
 
-const perPageOptions = [10, 25, 50, 100]
+const perPageOptions = [10, 25, 50, 100, 250]
 const selectedPerPage = ref(10)
 const isDropdownOpen = ref(false)
 const dropdownTimeout = ref(null)
