@@ -2,55 +2,69 @@
   <div class="page-wrapper">
     <!-- Statistik -->
     <div class="stats-section">
-      <div class="stat-card">
+      <div class="stat-card stat-card-blue">
+        <div class="stat-card-bg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+        </div>
         <div class="stat-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
             <line x1="12" y1="22.08" x2="12" y2="12"></line>
           </svg>
         </div>
-        <div class="stat-info">
-          <span class="stat-label">Total Aset</span>
-          <span class="stat-value">{{ displayTotal }}</span>
-        </div>
+        <span class="stat-value">{{ displayTotal }}</span>
+        <span class="stat-label">Total Aset</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-unit">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="stat-card stat-card-green">
+        <div class="stat-card-bg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          </svg>
+        </div>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="1" y="3" width="15" height="13"></rect>
             <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
             <circle cx="5.5" cy="18.5" r="2.5"></circle>
             <circle cx="18.5" cy="18.5" r="2.5"></circle>
           </svg>
         </div>
-        <div class="stat-info">
-          <span class="stat-label">Total Unit Barang</span>
-          <span class="stat-value">{{ displayTotalUnit }}</span>
-        </div>
+        <span class="stat-value">{{ displayTotalUnit }}</span>
+        <span class="stat-label">Total Unit Barang</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-aktivitas">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="stat-card stat-card-orange">
+        <div class="stat-card-bg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
           </svg>
         </div>
-        <div class="stat-info">
-          <span class="stat-label">Total Aktivitas</span>
-          <span class="stat-value">{{ displayTotalAktivitas }}</span>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
         </div>
+        <span class="stat-value">{{ displayTotalAktivitas }}</span>
+        <span class="stat-label">Total Aktivitas</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon stat-icon-baik">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="stat-card stat-card-teal">
+        <div class="stat-card-bg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
         </div>
-        <div class="stat-info">
-          <span class="stat-label">Kondisi Baik</span>
-          <span class="stat-value">{{ displayKondisiBaik }}</span>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
         </div>
+        <span class="stat-value">{{ displayKondisiBaik }}</span>
+        <span class="stat-label">Kondisi Baik</span>
       </div>
     </div>
 
@@ -437,65 +451,92 @@ onMounted(() => {
 }
 
 .stat-card {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px;
-  transition: box-shadow 0.2s ease;
+  gap: 8px;
+  border-radius: 14px;
+  padding: 28px 20px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: statFadeIn 0.5s ease-out both;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-card:nth-child(3) { animation-delay: 0.2s; }
+.stat-card:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes statFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .stat-card:hover {
-  box-shadow: 0 2px 8px var(--shadow-color);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card-blue {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: #ffffff;
+}
+
+.stat-card-green {
+  background: linear-gradient(135deg, #34c759, #2aa84a);
+  color: #ffffff;
+}
+
+.stat-card-orange {
+  background: linear-gradient(135deg, #ff9500, #e08600);
+  color: #ffffff;
+}
+
+.stat-card-teal {
+  background: linear-gradient(135deg, #00bcd4, #0097a7);
+  color: #ffffff;
+}
+
+.stat-card-bg {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 .stat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #e8f4fd;
-  color: #2196f3;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
   flex-shrink: 0;
+  backdrop-filter: blur(4px);
 }
 
-.stat-icon-unit {
-  background: #e8faf0;
-  color: #34c759;
-}
-
-.stat-icon-aktivitas {
-  background: #fff3e0;
-  color: #ff9500;
-}
-
-.stat-icon-baik {
-  background: #e8faf0;
-  color: #34c759;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .stat-label {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
 }
 
 .chart-section {
@@ -947,11 +988,16 @@ tbody tr:hover {
   }
 
   .stat-card {
-    padding: 16px 20px;
+    padding: 20px 16px;
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: 26px;
+  }
+
+  .stat-card-bg svg {
+    width: 60px;
+    height: 60px;
   }
 
   .chart-section {
@@ -1036,25 +1082,28 @@ tbody tr:hover {
   }
 
   .stat-card {
-    padding: 16px;
-    gap: 12px;
-    flex-direction: column;
-    text-align: center;
+    padding: 18px 14px;
+    gap: 6px;
   }
 
   .stat-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
   }
 
   .stat-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .stat-value {
     font-size: 22px;
+  }
+
+  .stat-card-bg svg {
+    width: 50px;
+    height: 50px;
   }
 
   .chart-section {
