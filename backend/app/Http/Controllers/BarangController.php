@@ -12,6 +12,8 @@ class BarangController extends Controller
     public function statistik()
     {
         $total = Barang::count();
+        $totalUnit = Barang::sum('jumlah');
+        $totalAktivitas = Riwayat::count();
         $kondisi = [
             'Baik' => Barang::where('kondisi', 'Baik')->count(),
             'Rusak Ringan' => Barang::where('kondisi', 'Rusak Ringan')->count(),
@@ -22,6 +24,8 @@ class BarangController extends Controller
             'success' => true,
             'data' => [
                 'total_aset' => $total,
+                'total_unit' => (int) $totalUnit,
+                'total_aktivitas' => $totalAktivitas,
                 'kondisi' => $kondisi,
             ]
         ]);

@@ -15,6 +15,31 @@
           <span class="stat-value">{{ displayTotal }}</span>
         </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-unit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Total Unit Barang</span>
+          <span class="stat-value">{{ displayTotalUnit }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-aktivitas">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Total Aktivitas</span>
+          <span class="stat-value">{{ displayTotalAktivitas }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Donut Chart Kondisi -->
@@ -182,7 +207,11 @@ import * as XLSX from 'xlsx'
 
 const user = ref(null)
 const totalAset = ref(0)
+const totalUnit = ref(0)
+const totalAktivitas = ref(0)
 const displayTotal = ref(0)
+const displayTotalUnit = ref(0)
+const displayTotalAktivitas = ref(0)
 const kondisiData = ref({ 'Baik': 0, 'Rusak Ringan': 0, 'Rusak Berat': 0 })
 const barangList = ref([])
 const allBarangList = ref([]) // For Excel download
@@ -252,14 +281,18 @@ const donutBg = computed(() => {
 
 const animateDonut = () => {
   const duration = 1200
-  const target = totalAset.value
+  const targetTotal = totalAset.value
+  const targetUnit = totalUnit.value
+  const targetAktivitas = totalAktivitas.value
   const start = performance.now()
   const step = (now) => {
     const elapsed = now - start
     const t = Math.min(elapsed / duration, 1)
     const ease = 1 - Math.pow(1 - t, 3)
     donutProgress.value = ease * 100
-    displayTotal.value = Math.round(ease * target)
+    displayTotal.value = Math.round(ease * targetTotal)
+    displayTotalUnit.value = Math.round(ease * targetUnit)
+    displayTotalAktivitas.value = Math.round(ease * targetAktivitas)
     if (t < 1) requestAnimationFrame(step)
   }
   requestAnimationFrame(step)
@@ -274,6 +307,8 @@ const fetchStatistik = async () => {
   try {
     const response = await api.get('/statistik')
     totalAset.value = response.data.data.total_aset
+    totalUnit.value = response.data.data.total_unit || 0
+    totalAktivitas.value = response.data.data.total_aktivitas || 0
     kondisiData.value = response.data.data.kondisi
     animateDonut()
   } catch (error) {
@@ -411,6 +446,16 @@ onMounted(() => {
   background: #e8f4fd;
   color: #2196f3;
   flex-shrink: 0;
+}
+
+.stat-icon-unit {
+  background: #e8faf0;
+  color: #34c759;
+}
+
+.stat-icon-aktivitas {
+  background: #fff3e0;
+  color: #ff9500;
 }
 
 .stat-info {
