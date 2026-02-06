@@ -97,7 +97,7 @@ Akses aplikasi di `http://localhost:5173`
 | Kolom | Tipe | Deskripsi |
 |-------|------|-----------|
 | id | bigint | Primary key |
-| kode_aset | varchar | Kode aset unik |
+| kode_aset | varchar | Kode aset (boleh sama, id yang membedakan) |
 | kode_barang | varchar | Kode barang |
 | nama_aset | varchar | Nama aset |
 | jenis_aset | varchar | Jenis/kategori |

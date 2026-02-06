@@ -27,7 +27,7 @@ Catatan: Bagian ini mencakup test case yang telah diimplementasikan dalam kode.
 
 | No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
 |----|--------------|----------------|-------------------|------------|-----------------|--------|
-| 1 | WB-CR-N01 | Tambah data dengan kode_aset duplikat | 1. Buka halaman Tambah Data<br>2. Isi kode_aset yang sudah ada<br>3. Klik Simpan | kode_aset: "EGOV01" (sudah ada) | Gagal simpan, muncul pesan error | ✅ |
+| 1 | WB-CR-N01 | Tambah data dengan kode_aset duplikat (diperbolehkan) | 1. Buka halaman Tambah Data<br>2. Isi kode_aset yang sudah ada<br>3. Klik Simpan | kode_aset: "EGOV01" (sudah ada) | Data berhasil disimpan, id berbeda yang membedakan | ✅ |
 | 2 | WB-CR-N02 | Tambah data dengan field kosong | 1. Buka halaman Tambah Data<br>2. Kosongkan field required<br>3. Klik Simpan | nama_aset: "" (kosong) | Form tidak bisa disubmit | ✅ |
 | 3 | WB-CR-N03 | Tambah data dengan jumlah 0 | 1. Buka halaman Tambah Data<br>2. Isi jumlah dengan 0<br>3. Klik Simpan | jumlah: 0 | Gagal simpan, validasi error | ✅ |
 | 4 | WB-CR-N04 | Tambah data dengan tahun tidak valid | 1. Buka halaman Tambah Data<br>2. Isi tahun dengan 1999<br>3. Klik Simpan | tahun_perolehan: 1999 | Gagal simpan, validasi error | ✅ |
@@ -64,7 +64,7 @@ Catatan: Bagian ini mencakup test case yang telah diimplementasikan dalam kode.
 | No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
 |----|--------------|----------------|-------------------|------------|-----------------|--------|
 | 1 | WB-UP-N01 | Update tanpa perubahan data | 1. Buka form update<br>2. Tidak mengubah apapun<br>3. Klik Simpan | Tidak ada perubahan | Muncul notifikasi "Tidak ada perubahan data" | ✅ |
-| 2 | WB-UP-N02 | Update dengan kode_aset duplikat | 1. Ubah kode_aset ke yang sudah ada<br>2. Klik Simpan | kode_aset: "EGOV02" (milik data lain) | Gagal simpan, error duplikat | ✅ |
+| 2 | WB-UP-N02 | Update dengan kode_aset duplikat (diperbolehkan) | 1. Ubah kode_aset ke yang sudah ada<br>2. Klik Simpan | kode_aset: "EGOV02" (milik data lain) | Data berhasil diupdate, kode_aset sama diperbolehkan | ✅ |
 | 3 | WB-UP-N03 | Update dengan jumlah 0 | 1. Ubah jumlah ke 0<br>2. Klik Simpan | jumlah: 0 | Gagal simpan, validasi error | ✅ |
 | 4 | WB-UP-N04 | Update dengan field kosong | 1. Kosongkan nama_aset<br>2. Klik Simpan | nama_aset: "" | Form tidak bisa disubmit | ✅ |
 | 5 | WB-UP-N05 | Update data yang tidak ada | 1. Akses URL /update-data/9999 | id: 9999 (tidak ada) | Halaman menampilkan "Data tidak ditemukan" | ✅ |
