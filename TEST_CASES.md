@@ -156,18 +156,18 @@ diimplementasikan dalam kode test aktual.
 
 | No | Test Case ID | Modul | Nama Test Case | Pre-condition | Langkah Pengujian | Expected Result | Status |
 |----|--------------|-------|----------------|---------------|-------------------|-----------------|--------|
-| 1 | BB-FN-01 | Login | Login dengan data valid | Di halaman login | 1. Isi username & password valid<br>2. Klik Login | Berhasil masuk ke dashboard | ❌ |
-| 2 | BB-FN-02 | Login | Login dengan data tidak valid | Di halaman login | 1. Isi username/password salah<br>2. Klik Login | Gagal login, pesan error muncul | ❌ |
-| 3 | BB-FN-03 | Tambah Data | Simpan data baru | Form terisi valid | 1. Isi semua field<br>2. Klik Simpan | Data tersimpan, notifikasi muncul | ❌ |
-| 4 | BB-FN-04 | Update Data | Simpan perubahan | Ada perubahan data | 1. Ubah data<br>2. Klik Simpan | Data terupdate, notifikasi muncul | ❌ |
-| 5 | BB-FN-05 | Hapus Data | Hapus data | Modal terbuka | 1. Klik "Ya, Hapus" | Data terhapus, notifikasi muncul | ❌ |
-| 6 | BB-FN-06 | Riwayat | Menampilkan log aktivitas | Ada aktivitas sebelumnya | 1. Klik menu Riwayat | Log aktivitas ditampilkan dengan detail | ❌ |
-| 7 | BB-FN-07 | Statistik | Statistik terupdate setelah tambah data | Data sudah ditambahkan | 1. Tambah data baru<br>2. Buka Home | Angka Total Aset, Total Unit, dan Kondisi terupdate | ❌ |
-| 8 | BB-FN-08 | Akun | Ganti username | Login aktif | 1. Buka Akun<br>2. Ganti username<br>3. Simpan | Username berubah, sidebar menampilkan nama baru | ❌ |
-| 9 | BB-FN-09 | Akun | Ganti password | Login aktif | 1. Buka Akun<br>2. Isi password lama & baru<br>3. Simpan | Password berubah, bisa login dengan password baru | ❌ |
-| 10 | BB-FN-10 | Search | Pencarian berdasarkan penanggung jawab | Data tersedia | 1. Ketik nama penanggung jawab di search<br>2. Lihat hasil | Data dengan penanggung jawab sesuai keyword ditampilkan | ❌ |
-| 11 | BB-FN-11 | Generate Label | Generate label aset | Data tersedia | 1. Buka Generate Label<br>2. Klik Generate pada data | Label PNG berhasil di-generate | ❌ |
-| 12 | BB-FN-12 | Logout | Logout dari sistem | Sudah login | 1. Klik tombol Logout | Kembali ke halaman login, token dihapus | ❌ |
+| 1 | BB-FN-01 | Login | Login dengan data valid | Di halaman login | 1. Isi username & password valid<br>2. Klik Login | Berhasil masuk ke dashboard | ⏳ |
+| 2 | BB-FN-02 | Login | Login dengan data tidak valid | Di halaman login | 1. Isi username/password salah<br>2. Klik Login | Gagal login, pesan error muncul | ⏳ |
+| 3 | BB-FN-03 | Tambah Data | Simpan data baru | Form terisi valid | 1. Isi semua field<br>2. Klik Simpan | Data tersimpan, notifikasi muncul | ⏳ |
+| 4 | BB-FN-04 | Update Data | Simpan perubahan | Ada perubahan data | 1. Ubah data<br>2. Klik Simpan | Data terupdate, notifikasi muncul | ⏳ |
+| 5 | BB-FN-05 | Hapus Data | Hapus data | Modal terbuka | 1. Klik "Ya, Hapus" | Data terhapus, notifikasi muncul | ⏳ |
+| 6 | BB-FN-06 | Riwayat | Menampilkan log aktivitas | Ada aktivitas sebelumnya | 1. Klik menu Riwayat | Log aktivitas ditampilkan dengan detail | ⏳ |
+| 7 | BB-FN-07 | Statistik | Statistik terupdate setelah tambah data | Data sudah ditambahkan | 1. Tambah data baru<br>2. Buka Home | Angka Total Aset, Total Unit, dan Kondisi terupdate | ⏳ |
+| 8 | BB-FN-08 | Akun | Ganti username | Login aktif | 1. Buka Akun<br>2. Ganti username<br>3. Simpan | Username berubah, sidebar menampilkan nama baru | ⏳ |
+| 9 | BB-FN-09 | Akun | Ganti password | Login aktif | 1. Buka Akun<br>2. Isi password lama & baru<br>3. Simpan | Password berubah, bisa login dengan password baru | ⏳ |
+| 10 | BB-FN-10 | Search | Pencarian berdasarkan penanggung jawab | Data tersedia | 1. Ketik nama penanggung jawab di search<br>2. Lihat hasil | Data dengan penanggung jawab sesuai keyword ditampilkan | ⏳ |
+| 11 | BB-FN-11 | Generate Label | Generate label aset | Data tersedia | 1. Buka Generate Label<br>2. Klik Generate pada data | Label PNG berhasil di-generate | ⏳ |
+| 12 | BB-FN-12 | Logout | Logout dari sistem | Sudah login | 1. Klik tombol Logout | Kembali ke halaman login, token dihapus | ⏳ |
 
 Catatan: Test case untuk modul Login, Tambah Data, Update Data, Hapus Data,
 Riwayat, Akun, Search, Generate Label, dan Logout tercantum dalam dokumentasi
@@ -179,14 +179,14 @@ tetapi tidak diimplementasikan dalam kode test aktual.
 
 | No | Test Case ID | Modul | Nama Test Case | Pre-condition | Langkah Pengujian | Expected Result | Status |
 |----|--------------|-------|----------------|---------------|-------------------|-----------------|--------|
-| 1 | BB-UI-01 | Dashboard | Animasi donut chart | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan donut chart | Donut chart muncul dengan animasi fill melingkar (clockwise) | ❌ |
-| 2 | BB-UI-02 | Dashboard | Animasi counting statistik | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan angka stat card | Angka stat card beranimasi dari 0 ke nilai akhir | ❌ |
-| 3 | BB-UI-03 | Dashboard | Dark mode toggle | Halaman dashboard terbuka | 1. Klik toggle Dark Mode | Tema berubah dengan transisi smooth, tidak ada flicker | ❌ |
-| 4 | BB-UI-04 | Dashboard | Responsive mobile view | Browser di resolusi mobile | 1. Resize browser ke 375px<br>2. Cek stat cards dan tabel | Layout menyesuaikan, stat cards 2 kolom, tabel scrollable | ❌ |
-| 5 | BB-UI-05 | Semua Tabel | Kolom Jumlah center-aligned | Halaman dengan tabel terbuka | 1. Buka halaman dengan tabel<br>2. Lihat kolom Jumlah | Angka jumlah rata tengah di semua halaman | ❌ |
-| 6 | BB-UI-06 | Semua Tabel | Badge kondisi konsisten | Halaman dengan tabel terbuka | 1. Buka semua halaman tabel | Badge kondisi berbentuk kotak (bukan pill) dengan warna konsisten di semua halaman | ❌ |
-| 7 | BB-UI-07 | Riwayat | Pagination 250 rows | Halaman Riwayat terbuka | 1. Buka Riwayat<br>2. Pilih 250 di dropdown per page | Tabel menampilkan hingga 250 baris per halaman | ❌ |
-| 8 | BB-UI-08 | Dashboard | Aktivitas Terbaru di samping donut | Halaman Home terbuka | 1. Buka halaman Home | Daftar 5 aktivitas terbaru muncul di samping donut chart | ❌ |
+| 1 | BB-UI-01 | Dashboard | Animasi donut chart | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan donut chart | Donut chart muncul dengan animasi fill melingkar (clockwise) | ⏳ |
+| 2 | BB-UI-02 | Dashboard | Animasi counting statistik | Halaman Home terbuka | 1. Buka halaman Home<br>2. Perhatikan angka stat card | Angka stat card beranimasi dari 0 ke nilai akhir | ⏳ |
+| 3 | BB-UI-03 | Dashboard | Dark mode toggle | Halaman dashboard terbuka | 1. Klik toggle Dark Mode | Tema berubah dengan transisi smooth, tidak ada flicker | ⏳ |
+| 4 | BB-UI-04 | Dashboard | Responsive mobile view | Browser di resolusi mobile | 1. Resize browser ke 375px<br>2. Cek stat cards dan tabel | Layout menyesuaikan, stat cards 2 kolom, tabel scrollable | ⏳ |
+| 5 | BB-UI-05 | Semua Tabel | Kolom Jumlah center-aligned | Halaman dengan tabel terbuka | 1. Buka halaman dengan tabel<br>2. Lihat kolom Jumlah | Angka jumlah rata tengah di semua halaman | ⏳ |
+| 6 | BB-UI-06 | Semua Tabel | Badge kondisi konsisten | Halaman dengan tabel terbuka | 1. Buka semua halaman tabel | Badge kondisi berbentuk kotak (bukan pill) dengan warna konsisten di semua halaman | ⏳ |
+| 7 | BB-UI-07 | Riwayat | Pagination 250 rows | Halaman Riwayat terbuka | 1. Buka Riwayat<br>2. Pilih 250 di dropdown per page | Tabel menampilkan hingga 250 baris per halaman | ⏳ |
+| 8 | BB-UI-08 | Dashboard | Aktivitas Terbaru di samping donut | Halaman Home terbuka | 1. Buka halaman Home | Daftar 5 aktivitas terbaru muncul di samping donut chart | ⏳ |
 
 Catatan: Test case untuk UI/UX tercantum dalam dokumentasi tetapi tidak
 diimplementasikan dalam kode test aktual.
