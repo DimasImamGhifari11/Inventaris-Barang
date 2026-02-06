@@ -157,8 +157,39 @@
       <div class="table-header">
         <h2>Data Aset</h2>
         <div class="header-right">
+          <div class="sort-controls">
+            <div class="custom-select" :class="{ 'is-open': isSortDropdownOpen }">
+              <button
+                type="button"
+                class="select-trigger"
+                @click="toggleSortDropdown"
+                @blur="closeSortDropdownDelayed"
+              >
+                <span class="select-value">{{ sortByLabel }}</span>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <Transition name="dropdown">
+                <div v-if="isSortDropdownOpen" class="select-dropdown">
+                  <button
+                    v-for="option in sortOptions"
+                    :key="option.value"
+                    type="button"
+                    class="select-option"
+                    :class="{ 'is-selected': sortBy === option.value }"
+                    @mousedown.prevent="selectSortOption(option.value)"
+                  >
+                    <span>{{ option.label }}</span>
+                    <svg v-if="sortBy === option.value" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </Transition>
+            </div>
+          </div>
           <div class="pagination-controls">
-            <label>Tampilkan:</label>
             <div class="custom-select" :class="{ 'is-open': isDropdownOpen }">
               <button
                 type="button"
@@ -346,7 +377,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import api from '../api'
 import * as XLSX from 'xlsx'
 
@@ -376,6 +407,37 @@ const pagination = ref({
 
 const perPageOptions = [10, 25, 50, 100, 250]
 const selectedPerPage = ref(10)
+const sortBy = ref('nama_aset')
+const sortOptions = [
+  { value: 'nama_aset', label: 'Nama Aset A-Z' },
+  { value: 'kode_barang', label: 'Kode Barang' }
+]
+const sortByLabel = computed(() => {
+  const found = sortOptions.find(o => o.value === sortBy.value)
+  return found ? found.label : 'Nama Aset A-Z'
+})
+const isSortDropdownOpen = ref(false)
+const sortDropdownTimeout = ref(null)
+
+const toggleSortDropdown = () => {
+  isSortDropdownOpen.value = !isSortDropdownOpen.value
+}
+
+const closeSortDropdownDelayed = () => {
+  sortDropdownTimeout.value = setTimeout(() => {
+    isSortDropdownOpen.value = false
+  }, 150)
+}
+
+const selectSortOption = (value) => {
+  clearTimeout(sortDropdownTimeout.value)
+  if (sortBy.value !== value) {
+    sortBy.value = value
+    handleSortChange()
+  }
+  isSortDropdownOpen.value = false
+}
+
 const isDropdownOpen = ref(false)
 const dropdownTimeout = ref(null)
 
@@ -407,6 +469,11 @@ const handlePerPageChange = () => {
   const targetPage = Math.min(newPage, newLastPage) || 1
   tableKey.value++
   fetchData(targetPage)
+}
+
+const handleSortChange = () => {
+  tableKey.value++
+  fetchData(1)
 }
 
 const form = ref({
@@ -721,7 +788,7 @@ const resetForm = () => {
 const fetchData = async (page = 1) => {
   loading.value = true
   try {
-    let url = `/barang?page=${page}&per_page=${selectedPerPage.value}`
+    let url = `/barang?page=${page}&per_page=${selectedPerPage.value}&sort_by=${sortBy.value}&sort_order=asc`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
@@ -1075,6 +1142,19 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-controls label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .pagination-controls {

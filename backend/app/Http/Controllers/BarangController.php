@@ -39,8 +39,21 @@ class BarangController extends Controller
     {
         $perPage = $request->query('per_page', 10);
         $search = $request->query('search');
+        $sortBy = $request->query('sort_by', 'nama_aset'); // default: nama_aset
+        $sortOrder = $request->query('sort_order', 'asc'); // default: asc
 
-        $query = Barang::orderBy('kode_aset', 'asc');
+        // Validasi sort_by untuk keamanan
+        $allowedSortFields = ['nama_aset', 'kode_barang', 'kode_aset', 'tahun_perolehan', 'jumlah'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'nama_aset';
+        }
+
+        // Validasi sort_order
+        if (!in_array(strtolower($sortOrder), ['asc', 'desc'])) {
+            $sortOrder = 'asc';
+        }
+
+        $query = Barang::orderBy($sortBy, $sortOrder);
 
         if ($search) {
             $query->where(function ($q) use ($search) {

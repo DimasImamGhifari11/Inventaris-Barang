@@ -133,6 +133,70 @@
       <div class="section-header">
         <h3>Data Inventaris Barang</h3>
         <div class="header-actions">
+          <div class="sort-controls">
+            <div class="custom-select" :class="{ 'is-open': isSortDropdownOpen }">
+              <button
+                type="button"
+                class="select-trigger"
+                @click="toggleSortDropdown"
+                @blur="closeSortDropdownDelayed"
+              >
+                <span class="select-value">{{ sortByLabel }}</span>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <Transition name="dropdown">
+                <div v-if="isSortDropdownOpen" class="select-dropdown">
+                  <button
+                    v-for="option in sortOptions"
+                    :key="option.value"
+                    type="button"
+                    class="select-option"
+                    :class="{ 'is-selected': sortBy === option.value }"
+                    @mousedown.prevent="selectSortOption(option.value)"
+                  >
+                    <span>{{ option.label }}</span>
+                    <svg v-if="sortBy === option.value" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </Transition>
+            </div>
+          </div>
+          <div class="pagination-controls">
+            <div class="custom-select" :class="{ 'is-open': isPerPageDropdownOpen }">
+              <button
+                type="button"
+                class="select-trigger"
+                @click="togglePerPageDropdown"
+                @blur="closePerPageDropdownDelayed"
+              >
+                <span class="select-value">{{ perPage }}</span>
+                <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+              <Transition name="dropdown">
+                <div v-if="isPerPageDropdownOpen" class="select-dropdown">
+                  <button
+                    v-for="option in perPageOptions"
+                    :key="option"
+                    type="button"
+                    class="select-option"
+                    :class="{ 'is-selected': perPage === option }"
+                    @mousedown.prevent="selectPerPageOption(option)"
+                  >
+                    <span>{{ option }}</span>
+                    <svg v-if="perPage === option" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </Transition>
+            </div>
+          </div>
           <div class="search-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
@@ -375,6 +439,64 @@ const pagination = ref({
   total: 0
 })
 
+const perPageOptions = [10, 25, 50, 100, 250]
+const perPage = ref(10)
+const sortBy = ref('nama_aset')
+const sortOptions = [
+  { value: 'nama_aset', label: 'Nama Aset A-Z' },
+  { value: 'kode_barang', label: 'Kode Barang' }
+]
+const sortByLabel = computed(() => {
+  const found = sortOptions.find(o => o.value === sortBy.value)
+  return found ? found.label : 'Nama Aset A-Z'
+})
+
+// Sort dropdown state
+const isSortDropdownOpen = ref(false)
+const sortDropdownTimeout = ref(null)
+
+const toggleSortDropdown = () => {
+  isSortDropdownOpen.value = !isSortDropdownOpen.value
+}
+
+const closeSortDropdownDelayed = () => {
+  sortDropdownTimeout.value = setTimeout(() => {
+    isSortDropdownOpen.value = false
+  }, 150)
+}
+
+const selectSortOption = (value) => {
+  clearTimeout(sortDropdownTimeout.value)
+  if (sortBy.value !== value) {
+    sortBy.value = value
+    handleSortChange()
+  }
+  isSortDropdownOpen.value = false
+}
+
+// PerPage dropdown state
+const isPerPageDropdownOpen = ref(false)
+const perPageDropdownTimeout = ref(null)
+
+const togglePerPageDropdown = () => {
+  isPerPageDropdownOpen.value = !isPerPageDropdownOpen.value
+}
+
+const closePerPageDropdownDelayed = () => {
+  perPageDropdownTimeout.value = setTimeout(() => {
+    isPerPageDropdownOpen.value = false
+  }, 150)
+}
+
+const selectPerPageOption = (option) => {
+  clearTimeout(perPageDropdownTimeout.value)
+  if (perPage.value !== option) {
+    perPage.value = option
+    handlePerPageChange()
+  }
+  isPerPageDropdownOpen.value = false
+}
+
 const getRowNumber = (index) => {
   return (pagination.value.current_page - 1) * pagination.value.per_page + index + 1
 }
@@ -485,7 +607,7 @@ const fetchBarang = async (page = 1) => {
   loading.value = true
   failedImages.value.clear()
   try {
-    let url = `/barang?page=${page}&per_page=10`
+    let url = `/barang?page=${page}&per_page=${perPage.value}&sort_by=${sortBy.value}&sort_order=asc`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
@@ -500,6 +622,20 @@ const fetchBarang = async (page = 1) => {
   } finally {
     loading.value = false
   }
+}
+
+const handlePerPageChange = () => {
+  const oldPerPage = pagination.value.per_page
+  const currentPageVal = pagination.value.current_page
+  const firstItemIndex = (currentPageVal - 1) * oldPerPage
+  const newPage = Math.floor(firstItemIndex / perPage.value) + 1
+  const newLastPage = Math.ceil(pagination.value.total / perPage.value)
+  const targetPage = Math.min(newPage, newLastPage) || 1
+  fetchBarang(targetPage)
+}
+
+const handleSortChange = () => {
+  fetchBarang(1)
 }
 
 const fetchAllBarang = async () => {
@@ -968,6 +1104,152 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.sort-controls,
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-controls label,
+.pagination-controls label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Custom Dropdown */
+.custom-select {
+  position: relative;
+  min-width: 80px;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.select-trigger:hover {
+  border-color: var(--text-secondary);
+  background: var(--bg-primary);
+}
+
+.select-trigger:focus {
+  outline: none;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.custom-select.is-open .select-trigger {
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.select-value {
+  font-weight: 600;
+}
+
+.select-arrow {
+  color: var(--text-secondary);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.custom-select.is-open .select-arrow {
+  transform: rotate(180deg);
+  color: #0071e3;
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.select-option:hover {
+  background: var(--bg-primary);
+}
+
+.select-option.is-selected {
+  color: #0071e3;
+  background: rgba(0, 113, 227, 0.08);
+}
+
+.select-option.is-selected:hover {
+  background: rgba(0, 113, 227, 0.12);
+}
+
+.select-option svg {
+  color: #0071e3;
+}
+
+/* Dropdown Animation */
+.dropdown-enter-active {
+  animation: dropdownIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown-leave-active {
+  animation: dropdownOut 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dropdownIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dropdownOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
 }
 
 .btn-download {
