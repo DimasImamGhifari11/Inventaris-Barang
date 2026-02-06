@@ -2,7 +2,7 @@
 (Didasarkan pada implementasi test aktual)
 
 Catatan: Dokumentasi ini mencerminkan test case yang telah diimplementasikan dalam kode,
-bukan semua skenario yang direncanakan. Jumlah test case aktual adalah 63 berdasarkan
+bukan semua skenario yang direncanakan. Jumlah test case aktual adalah 70 berdasarkan
 hasil php artisan test.
 
 ## A. WHITE BOX TESTING
@@ -130,6 +130,21 @@ dalam kode test aktual dan berjalan dengan sukses.
 
 ---
 
+### 11. IMAGE/FOTO BARANG - Test Cases
+
+| No | Test Case ID | Nama Test Case | Langkah Pengujian | Input Data | Expected Result | Status |
+|----|--------------|----------------|-------------------|------------|-----------------|--------|
+| 1 | WB-IMG-P01 | Upload gambar saat tambah data barang | 1. Buka halaman Tambah Data<br>2. Isi semua field dengan data valid<br>3. Upload file gambar (jpg/png)<br>4. Klik Simpan | File gambar: test-image.jpg (format valid) | Data berhasil disimpan dengan gambar, file tersimpan di storage/gambar_barang/ | ✅ |
+| 2 | WB-IMG-P02 | Update barang dengan upload gambar baru | 1. Buka data barang yang sudah punya gambar<br>2. Upload gambar baru<br>3. Klik Update | File gambar baru: new-image.jpg | Gambar lama terhapus, gambar baru tersimpan, riwayat mencatat "Ubah Gambar" | ✅ |
+| 3 | WB-IMG-P03 | Hapus gambar dari barang | 1. Buka data barang yang sudah punya gambar<br>2. Centang opsi "Hapus Gambar"<br>3. Klik Update | Flag hapus_gambar: true | Gambar terhapus dari storage dan database, riwayat mencatat "Hapus Gambar" | ✅ |
+| 4 | WB-IMG-N01 | Validasi format file gambar yang tidak valid | 1. Buka halaman Tambah Data<br>2. Isi field dengan data valid<br>3. Upload file non-image (PDF)<br>4. Klik Simpan | File: document.pdf (bukan gambar) | Validasi error muncul, data tidak tersimpan | ✅ |
+
+Catatan: Fitur foto barang memungkinkan preview gambar di semua tabel kecuali riwayat.
+Gambar disimpan di storage/gambar_barang/ dengan nama unik (timestamp_uniqid.ext).
+Format yang didukung: jpeg, png, jpg, gif, webp dengan maksimal ukuran 2MB.
+
+---
+
 ## B. BLACK BOX TESTING
 
 Catatan: Bagian ini mencakup test case yang direncanakan tetapi tidak semuanya
@@ -212,14 +227,12 @@ diimplementasikan dalam kode test aktual.
 | Generate Label | 3 |
 | Bulk Delete | 4 |
 | Search | 6 |
-| **Subtotal White Box** | **54** |
+| Image/Foto Barang | 4 |
+| **Subtotal White Box** | **60** |
 | **BLACK BOX TESTING** | |
 | Boundary Value Analysis | 10 |
 | **Subtotal Black Box** | **10** |
-| **ADDITIONAL TESTS** | |
-| Functional Testing | 2 |
-| **Subtotal Additional** | **2** |
-| **TOTAL** | **66** |
+| **TOTAL** | **70** |
 
 ---
 
@@ -232,18 +245,19 @@ diimplementasikan dalam kode test aktual.
 
 **Fitur yang Diuji:**
 - CRUD Barang (Tambah, Update, Hapus)
+- Upload, Update, dan Hapus Gambar/Foto Barang
 - Import Excel
 - Bulk Delete
 - Pencarian (kode_aset, kode_barang, nama_aset, penanggung_jawab)
 - Pagination
 - Statistik Dashboard (Total Aset, Total Unit, Total Aktivitas, Kondisi Baik)
 - Manajemen Akun (Ganti Username & Password)
+- Generate Label Aset
 
 ---
 
 Catatan Tambahan:
-Beberapa test case yang tercantum dalam dokumentasi ini mungkin belum diimplementasikan
-secara lengkap dalam kode. Dokumentasi ini disesuaikan dengan jumlah test case aktual
-sebanyak 63 yang terdeteksi oleh php artisan test.
+Test case sekarang totalnya adalah 70, termasuk 4 test case baru untuk fitur
+upload, update, dan hapus foto barang. Code coverage mencapai 89.7%.
 
 *Dokumen ini dibuat untuk keperluan pengujian Sistem Inventaris Barang Diskominfo HSU*

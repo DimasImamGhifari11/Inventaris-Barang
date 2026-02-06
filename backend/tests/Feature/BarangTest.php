@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Barang;
 use App\Models\Riwayat;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class BarangTest extends TestCase
@@ -1037,8 +1038,210 @@ class BarangTest extends TestCase
 
         $this->assertDatabaseCount('barang', 1);
     }
+
+    /**
+     * =====================================================
+     * WHITE BOX TESTING - IMAGE/FOTO BARANG
+     * =====================================================
+     */
+
+    /**
+     * WB-IMG-P01: Upload gambar saat tambah data barang
+     */
+    public function test_upload_gambar_saat_tambah_data_barang(): void
+    {
+        Storage::fake('public');
+
+        $file = \Illuminate\Http\UploadedFile::fake()->create('test-image.jpg', 1000, 'image/jpeg');
+
+        $data = [
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'gambar' => $file,
+        ];
+
+        $response = $this->authenticatedPostJson('/api/barang', $data);
+
+        $response->assertStatus(201)
+                 ->assertJson([
+                     'success' => true,
+                     'message' => 'Data berhasil disimpan',
+                 ]);
+
+        $barang = Barang::where('kode_aset', 'EGOV01')->first();
+        $this->assertNotNull($barang->gambar);
+        
+        // Verify file exists in storage
+        $this->assertTrue(Storage::disk('public')->exists('gambar_barang/' . $barang->gambar));
+    }
+
+    /**
+     * WB-IMG-P02: Update barang dengan upload gambar baru
+     */
+    public function test_update_barang_dengan_upload_gambar_baru(): void
+    {
+        Storage::fake('public');
+
+        // Create barang with initial image
+        $initialFile = \Illuminate\Http\UploadedFile::fake()->create('initial.jpg', 1000, 'image/jpeg');
+        $initialFilename = time() . '_' . uniqid() . '.jpg';
+        $initialFile->storeAs('gambar_barang', $initialFilename, 'public');
+
+        $barang = Barang::create([
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'gambar' => $initialFilename,
+        ]);
+
+        // Update with new image
+        $newFile = \Illuminate\Http\UploadedFile::fake()->create('new-image.jpg', 1000, 'image/jpeg');
+        
+        $updateData = [
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell Updated',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'gambar' => $newFile,
+        ];
+
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'success' => true,
+                     'message' => 'Data berhasil diupdate',
+                 ]);
+
+        $barang->refresh();
+        $this->assertNotEquals($initialFilename, $barang->gambar);
+        $this->assertNotNull($barang->gambar);
+
+        // Verify riwayat contains 'Ubah Gambar'
+        $this->assertDatabaseHas('riwayat', [
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell Updated',
+        ]);
+        
+        $riwayat = Riwayat::where('kode_barang', '2025.001/EGOV')
+                          ->where('nama_aset', 'Laptop Dell Updated')
+                          ->first();
+        $this->assertStringContainsString('Ubah Gambar', $riwayat->perubahan);
+    }
+
+    /**
+     * WB-IMG-P03: Hapus gambar dari barang
+     */
+    public function test_hapus_gambar_dari_barang(): void
+    {
+        Storage::fake('public');
+
+        // Create barang with image
+        $file = \Illuminate\Http\UploadedFile::fake()->create('test.jpg', 1000, 'image/jpeg');
+        $filename = time() . '_' . uniqid() . '.jpg';
+        $file->storeAs('gambar_barang', $filename, 'public');
+
+        $barang = Barang::create([
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'gambar' => $filename,
+        ]);
+
+        // Update with hapus_gambar flag
+        $updateData = [
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'hapus_gambar' => true,
+        ];
+
+        $response = $this->authenticatedPutJson("/api/barang/{$barang->id}", $updateData);
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'success' => true,
+                     'message' => 'Data berhasil diupdate',
+                 ]);
+
+        $barang->refresh();
+        $this->assertNull($barang->gambar);
+
+        // Verify riwayat contains 'Hapus Gambar'
+        $riwayat = Riwayat::where('kode_barang', '2025.001/EGOV')
+                          ->latest()
+                          ->first();
+        $this->assertStringContainsString('Hapus Gambar', $riwayat->perubahan);
+    }
+
+    /**
+     * WB-IMG-N01: Validasi format file gambar yang tidak valid
+     */
+    public function test_validasi_format_file_gambar_tidak_valid(): void
+    {
+        Storage::fake('public');
+
+        // Try to upload a non-image file
+        $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+
+        $data = [
+            'kode_aset' => 'EGOV01',
+            'kode_barang' => '2025.001/EGOV',
+            'nama_aset' => 'Laptop Dell',
+            'jenis_aset' => 'Peralatan IT',
+            'jumlah' => 5,
+            'kondisi' => 'Baik',
+            'lokasi_penyimpanan' => 'Ruang Server',
+            'penanggung_jawab' => 'John Doe',
+            'tahun_perolehan' => 2025,
+            'gambar' => $file,
+        ];
+
+        $response = $this->authenticatedPostJson('/api/barang', $data);
+
+        $response->assertStatus(422)
+                 ->assertJson([
+                     'success' => false,
+                 ])
+                 ->assertJsonStructure([
+                     'success',
+                     'message',
+                     'errors' => ['gambar']
+                 ]);
+
+        // Verify no data was created
+        $this->assertDatabaseMissing('barang', [
+            'kode_aset' => 'EGOV01',
+        ]);
+    }
 }
-
-
-
-
