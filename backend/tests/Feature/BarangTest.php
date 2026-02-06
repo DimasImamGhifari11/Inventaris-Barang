@@ -179,7 +179,7 @@ class BarangTest extends TestCase
      */
 
     /**
-     * WB-CR-N01: Tambah data dengan kode_aset duplikat
+     * WB-CR-N01: Tambah data dengan kode_aset duplikat (diperbolehkan, id yang membedakan)
      */
     public function test_tambah_data_dengan_kode_aset_duplikat(): void
     {
@@ -196,9 +196,9 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        // Coba buat dengan kode_aset yang sama
+        // Buat dengan kode_aset yang sama - diperbolehkan karena id yang membedakan
         $data = [
-            'kode_aset' => 'EGOV01', // Duplikat
+            'kode_aset' => 'EGOV01',
             'kode_barang' => '2025.002/EGOV',
             'nama_aset' => 'Monitor LG',
             'jenis_aset' => 'Peralatan IT',
@@ -211,10 +211,13 @@ class BarangTest extends TestCase
 
         $response = $this->authenticatedPostJson('/api/barang', $data);
 
-        $response->assertStatus(422)
+        $response->assertStatus(201)
                  ->assertJson([
-                     'success' => false,
+                     'success' => true,
                  ]);
+
+        // Kedua data tersimpan dengan kode_aset sama tapi id berbeda
+        $this->assertDatabaseCount('barang', 2);
     }
 
     /**
@@ -701,7 +704,7 @@ class BarangTest extends TestCase
      */
 
     /**
-     * WB-UP-N01: Update dengan kode_aset duplikat
+     * WB-UP-N01: Update dengan kode_aset duplikat (diperbolehkan)
      */
     public function test_update_dengan_kode_aset_duplikat(): void
     {
@@ -729,9 +732,9 @@ class BarangTest extends TestCase
             'tahun_perolehan' => 2025,
         ]);
 
-        // Coba update barang2 dengan kode_aset milik barang1
+        // Update barang2 dengan kode_aset milik barang1 - diperbolehkan
         $updateData = [
-            'kode_aset' => 'EGOV01', // Duplikat - milik barang1
+            'kode_aset' => 'EGOV01',
             'kode_barang' => '2025.002/EGOV',
             'nama_aset' => 'Monitor LG',
             'jenis_aset' => 'Peralatan IT',
@@ -744,10 +747,16 @@ class BarangTest extends TestCase
 
         $response = $this->authenticatedPutJson("/api/barang/{$barang2->id}", $updateData);
 
-        $response->assertStatus(422)
+        $response->assertStatus(200)
                  ->assertJson([
-                     'success' => false,
+                     'success' => true,
                  ]);
+
+        // barang2 sekarang punya kode_aset sama dengan barang1
+        $this->assertDatabaseHas('barang', [
+            'id' => $barang2->id,
+            'kode_aset' => 'EGOV01',
+        ]);
     }
 
     /**

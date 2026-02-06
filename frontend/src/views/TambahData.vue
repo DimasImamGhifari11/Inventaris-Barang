@@ -627,8 +627,6 @@ const readExcelFile = (file) => {
           return String(cell).trim() !== '' && String(cell).trim() !== 'NaN'
         }))
 
-        let autoKodeCounter = 1
-
         const mappedData = rows.map((row) => {
           let kodeAset, kodeBarang, namaAset, jenisAset, jumlah, kondisi, lokasi, pj, tahun
 
@@ -654,10 +652,6 @@ const readExcelFile = (file) => {
             tahun = parseInt(row[8 + offset]) || new Date().getFullYear()
           }
 
-          if (kodeAset === '-') {
-            kodeAset = `EGOV${String(autoKodeCounter).padStart(2, '0')}`
-            autoKodeCounter++
-          }
           if (kondisi === '-') kondisi = 'Baik'
 
           return {
