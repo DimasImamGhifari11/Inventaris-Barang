@@ -12,10 +12,12 @@ Aplikasi pengelolaan data inventaris barang untuk Dinas Komunikasi Informatika d
 
 - Login & Autentikasi (Laravel Sanctum)
 - Dashboard Statistik (Total Aset, Total Unit, Total Aktivitas, Kondisi Baik)
-- Donut chart kondisi barang dengan animasi fill
+- Donut chart kondisi barang dengan animasi fill clockwise
+- Animasi counting statistik 
 - Aktivitas Terbaru (5 log terakhir di dashboard)
 - CRUD Data Barang
 - Upload gambar barang (drag & drop, max 2MB, format JPG/PNG/GIF/WebP)
+- Pengelolaan gambar (ubah/hapus saat update)
 - Preview gambar barang di tabel dengan modal zoom
 - Import data dari file Excel (drag & drop)
 - Export data ke Excel
@@ -27,6 +29,8 @@ Aplikasi pengelolaan data inventaris barang untuk Dinas Komunikasi Informatika d
 - Manajemen Akun (ganti username & password)
 - Dark mode / Light mode dengan transisi smooth (tersimpan di localStorage)
 - Responsive design (desktop, tablet, mobile)
+- Badge kondisi dengan desain kotak dan warna konsisten
+
 
 ## Instalasi
 
@@ -107,6 +111,114 @@ Akses aplikasi di `http://localhost:5173`
 | penanggung_jawab | varchar | PIC |
 | tahun_perolehan | integer | Tahun perolehan |
 | gambar | varchar | Nama file gambar (nullable) |
+| keterangan | text | Keterangan tambahan (nullable) |
+
+### Tabel `riwayat`
+
+| Kolom | Tipe | Deskripsi |
+|-------|------|-----------||
+| id | bigint | Primary key |
+| barang_id | bigint | Foreign key ke tabel barang (nullable) |
+| kode_barang | varchar | Kode barang |
+| nama_aset | varchar | Nama aset |
+| jenis_perubahan | enum | Tambah/Edit/Hapus/Tambah Gambar/Ubah Gambar/Hapus Gambar |
+| stok_sebelum | integer | Stok sebelum perubahan (nullable) |
+| stok_sesudah | integer | Stok sesudah perubahan (nullable) |
+| keterangan | text | Detail perubahan (nullable) |
+| created_at | timestamp | Waktu perubahan |
+
+## Validasi Data
+
+### Validasi File Gambar
+
+**Format yang Didukung:**
+- JPG/JPEG (image/jpeg)
+- PNG (image/png)
+- GIF (image/gif)
+- WebP (image/webp)
+
+**Ukuran Maksimal:** 2MB (2048 KB)
+
+**Lokasi Penyimpanan:**
+- Path: `backend/storage/app/public/gambar_barang/`
+- Format nama file: `{timestamp}_{uniqid}.{ext}`
+- Contoh: `1738234567_65a9c3f1b2d4e.jpg`
+
+**Fitur Pengelolaan Gambar:**
+- **Tambah Gambar:** Upload gambar baru saat menambah atau mengedit data
+- **Ubah Gambar:** Ganti gambar yang sudah ada dengan gambar baru
+- **Hapus Gambar:** Hapus gambar dari data barang
+- Semua perubahan gambar tercatat di riwayat aktivitas
+
+### Validasi Boundary Values
+
+| Field | Validasi | Keterangan |
+|-------|----------|------------|
+| Jumlah | Minimum: 1 | Harus bilangan positif |
+| Tahun Perolehan | Minimum: 2000<br>Maksimum: Tahun sekarang | Tahun 4 digit yang valid |
+| Kode Aset | Boleh duplikat | ID otomatis yang membedakan |
+| Nama Aset | 1-255 karakter | Wajib diisi |
+| Kode Barang | 1-255 karakter | Wajib diisi |
+| Kondisi | Enum | Baik / Rusak Ringan / Rusak Berat |
+
+### Validasi Akun
+
+| Field | Validasi | Keterangan |
+|-------|----------|------------|
+| Username | Minimum: 3 karakter | Wajib diisi, unik |
+| Password | Minimum: 6 karakter | Wajib diisi untuk login |
+
+## Riwayat Aktivitas
+
+### Informasi yang Dicatat
+
+Sistem mencatat semua perubahan data dengan detail lengkap:
+
+**Jenis Perubahan:**
+- **Tambah** - Data baru ditambahkan
+- **Edit** - Data yang sudah ada diubah
+- **Hapus** - Data dihapus
+- **Tambah Gambar** - Gambar baru ditambahkan ke barang
+- **Ubah Gambar** - Gambar barang diganti
+- **Hapus Gambar** - Gambar barang dihapus
+- **Edit Stok (+/-jumlah)** - Perubahan jumlah stok dengan keterangan
+
+**Data yang Terekam:**
+- Waktu perubahan (timestamp)
+- Kode barang dan nama aset
+- Jenis perubahan (dengan badge warna)
+- Stok sebelum dan sesudah perubahan
+- Keterangan detail perubahan
+
+## Desain UI & Animasi
+
+### Dashboard Statistik
+
+**Stat Cards:**
+- Animasi counting dari 0 ke nilai akhir
+- Gradient berwarna: biru (Total Aset), hijau (Total Unit), oranye (Total Aktivitas), teal (Kondisi Baik)
+
+**Donut Chart:**
+- Animasi fill melingkar (clockwise)
+- Proporsi kondisi barang dengan warna berbeda
+- Transisi smooth saat data berubah
+
+**Badge Kondisi:**
+- Desain kotak (bukan pil)
+- Warna konsisten:
+  - Hijau: Baik
+  - Kuning: Rusak Ringan
+  - Merah: Rusak Berat
+
+**Tabel Data:**
+- Kolom jumlah center-aligned
+- Thumbnail gambar 48x48 piksel
+- Modal zoom untuk preview gambar besar
+
+**Dark Mode:**
+- Toggle switch di sidebar
+- Transisi smooth (0.4 detik)
+- Preferensi tersimpan di localStorage
 
 ## API Endpoints
 
