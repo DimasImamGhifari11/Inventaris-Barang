@@ -116,7 +116,7 @@ Akses aplikasi di `http://localhost:5173`
 ### Tabel `riwayat`
 
 | Kolom | Tipe | Deskripsi |
-|-------|------|-----------||
+|-------|------|-----------|
 | id | bigint | Primary key |
 | barang_id | bigint | Foreign key ke tabel barang (nullable) |
 | kode_barang | varchar | Kode barang |
